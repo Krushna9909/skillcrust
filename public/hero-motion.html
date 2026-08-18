@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hero Motion Options — SkillCrust</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/styles.css">
+<style>
+  .opt-wrap{max-width:1180px;margin:0 auto;padding:48px 24px 80px}
+  .opt{margin-bottom:72px}
+  .opt-head{display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+  .opt-head h2{margin:0;font-size:1.35rem}
+  .opt-badge{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;padding:6px 12px;border-radius:var(--radius-pill);background:var(--accent-soft);color:var(--accent-2)}
+  .stage{position:relative;min-height:440px;display:grid;place-items:center;border:1px solid var(--border);border-radius:var(--radius-lg);background:linear-gradient(160deg,var(--surface),var(--surface-sunken));overflow:hidden;padding:40px}
+
+  /* ---- Option 1 : Orbiting skill constellation ---- */
+  .orbit{position:relative;width:360px;height:360px}
+  .orbit .core{position:absolute;inset:34%;border-radius:50%;background:var(--gradient-primary);filter:blur(0.3px);box-shadow:0 0 70px -10px rgba(124,58,237,.85);animation:corePulse 3.4s var(--ease) infinite}
+  .orbit .core span{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--font-display);font-weight:700;color:#fff;font-size:1.05rem}
+  @keyframes corePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+  .ring{position:absolute;inset:0;border:1px dashed rgba(255,255,255,.14);border-radius:50%;animation:spin 18s linear infinite}
+  .ring.r2{inset:14%;animation-duration:12s;animation-direction:reverse;border-style:solid;border-color:rgba(34,211,238,.18)}
+  .ring.r3{inset:28%;animation-duration:26s;border-color:rgba(168,85,247,.22)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .sat{position:absolute;top:-16px;left:50%;transform:translateX(-50%);padding:8px 14px;border-radius:var(--radius-pill);background:rgba(18,20,28,.9);border:1px solid var(--border-strong);font-size:.78rem;white-space:nowrap;backdrop-filter:blur(8px);animation:counter 18s linear infinite}
+  .ring.r2 .sat{animation-duration:12s;animation-direction:reverse}
+  .ring.r3 .sat{animation-duration:26s}
+  @keyframes counter{to{transform:translateX(-50%) rotate(-360deg)}}
+
+  /* ---- Option 2 : Photo + live data cards ---- */
+  .photo-motion{position:relative;width:min(420px,100%)}
+  .photo-motion .frame{position:relative;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border-strong);box-shadow:var(--shadow-pop);animation:floaty 7s ease-in-out infinite}
+  .photo-motion img{display:block;width:100%;height:auto}
+  .photo-motion .scan{position:absolute;left:0;right:0;height:120px;background:linear-gradient(180deg,transparent,rgba(34,211,238,.22),transparent);animation:scan 4.2s ease-in-out infinite}
+  @keyframes scan{0%{top:-120px}100%{top:100%}}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+  .live-card{position:absolute;padding:12px 16px;border-radius:var(--radius-md);background:rgba(13,15,23,.86);border:1px solid var(--border-strong);backdrop-filter:blur(12px);box-shadow:var(--shadow-card);font-size:.8rem}
+  .live-card b{display:block;font-family:var(--font-mono);font-size:1.05rem;color:var(--money)}
+  .lc-1{top:12%;left:-52px;animation:floaty 5.5s ease-in-out infinite}
+  .lc-2{bottom:16%;right:-46px;animation:floaty 6.6s ease-in-out .6s infinite}
+  .lc-3{bottom:-18px;left:12%;animation:floaty 8s ease-in-out .3s infinite}
+  .spark{width:7px;height:7px;border-radius:50%;background:var(--money);display:inline-block;margin-right:6px;box-shadow:0 0 0 0 var(--money-soft);animation:ping 1.8s infinite}
+  @keyframes ping{0%{box-shadow:0 0 0 0 rgba(132,204,22,.5)}100%{box-shadow:0 0 0 14px rgba(132,204,22,0)}}
+
+  /* ---- Option 3 : Animated SVG growth scene ---- */
+  .scene{width:min(520px,100%)}
+  .scene .bar{transform-origin:bottom;animation:grow 2.6s var(--ease) infinite alternate}
+  .scene .bar:nth-child(2){animation-delay:.15s}
+  .scene .bar:nth-child(3){animation-delay:.3s}
+  .scene .bar:nth-child(4){animation-delay:.45s}
+  .scene .bar:nth-child(5){animation-delay:.6s}
+  @keyframes grow{from{transform:scaleY(.35)}to{transform:scaleY(1)}}
+  .scene .line{stroke-dasharray:600;stroke-dashoffset:600;animation:draw 3.2s var(--ease) infinite}
+  @keyframes draw{0%{stroke-dashoffset:600}60%,100%{stroke-dashoffset:0}}
+  .scene .dot{animation:corePulse 2.2s ease-in-out infinite}
+  .scene .chip{animation:floaty 6s ease-in-out infinite}
+</style>
+</head>
+<body>
+<div class="mesh-bg" aria-hidden="true"><span class="blob blob-1"></span><span class="blob blob-2"></span></div>
+<div class="opt-wrap">
+  <span class="eyebrow">Pick one</span>
+  <h1 style="font-size:2rem">Hero motion options</h1>
+  <p class="lede">Three live animated hero visuals to replace the static photo. Tell me the number you like and I'll drop it into the landing page.</p>
+
+  <div class="opt">
+    <div class="opt-head"><span class="opt-badge">Option 1</span><h2>Skill Constellation</h2><span style="color:var(--text-faint)">Pure CSS orbit — no photo, fully brandable</span></div>
+    <div class="stage">
+      <div class="orbit">
+        <div class="ring"><span class="sat">🎬 Editing</span></div>
+        <div class="ring r2"><span class="sat">📈 Marketing</span></div>
+        <div class="ring r3"><span class="sat">🤖 AI</span></div>
+        <div class="core"><span>SkillCrust</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="opt">
+    <div class="opt-head"><span class="opt-badge">Option 2</span><h2>Living Portrait + Data Cards</h2><span style="color:var(--text-faint)">Keeps your girl photo, adds float, scan sweep and live stats</span></div>
+    <div class="stage">
+      <div class="photo-motion">
+        <div class="frame"><img src="/assets/img/hero-learner.jpg" alt="Learner"><span class="scan"></span></div>
+        <div class="live-card lc-1"><span class="spark"></span>Lesson completed<b>128</b></div>
+        <div class="live-card lc-2"><span class="spark"></span>Balance<b>₹24,750</b></div>
+        <div class="live-card lc-3"><span class="spark"></span>Students learning<b>10,000+</b></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="opt">
+    <div class="opt-head"><span class="opt-badge">Option 3</span><h2>Growth Scene (animated SVG)</h2><span style="color:var(--text-faint)">Fintech-style drawing chart, lightweight and premium</span></div>
+    <div class="stage">
+      <svg class="scene" viewBox="0 0 520 320" fill="none">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#22D3EE"/></linearGradient>
+        </defs>
+        <rect x="10" y="10" width="500" height="300" rx="22" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.10)"/>
+        <g>
+          <rect class="bar" x="60"  y="120" width="42" height="140" rx="10" fill="url(#g1)" opacity=".55"/>
+          <rect class="bar" x="130" y="100" width="42" height="160" rx="10" fill="url(#g1)" opacity=".7"/>
+          <rect class="bar" x="200" y="80"  width="42" height="180" rx="10" fill="url(#g1)" opacity=".85"/>
+          <rect class="bar" x="270" y="60"  width="42" height="200" rx="10" fill="url(#g1)"/>
+          <rect class="bar" x="340" y="40"  width="42" height="220" rx="10" fill="url(#g1)"/>
+        </g>
+        <path class="line" d="M60 200 C 150 170, 200 120, 280 100 S 420 70, 470 50" stroke="#22D3EE" stroke-width="3" stroke-linecap="round"/>
+        <circle class="dot" cx="470" cy="50" r="8" fill="#22D3EE"/>
+        <g class="chip"><rect x="330" y="120" width="150" height="46" rx="14" fill="rgba(13,15,23,.9)" stroke="rgba(255,255,255,.16)"/>
+        <text x="348" y="149" fill="#F4F4F6" font-family="JetBrains Mono, monospace" font-size="16">+ ₹24,750</text></g>
+      </svg>
+    </div>
+  </div>
+</div>
+<script src="/assets/js/theme.js"></script>
+</body>
+</html>

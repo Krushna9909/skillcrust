@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Users — SkillCrust Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/assets/js/theme.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <div id="appShellRoot"></div>
+
+    <main class="app-main">
+      <div class="page-head" style="display:flex; align-items:flex-start; justify-content:space-between; gap:20px; flex-wrap:wrap;">
+        <div>
+          <h1 style="font-size:1.9rem;">Users</h1>
+          <p>View every account, add one manually, or deactivate/reactivate.</p>
+        </div>
+        <button class="btn btn-primary" type="button" id="toggleAddFormBtn">+ Add user</button>
+      </div>
+
+      <div id="addUserCard" class="card" style="display:none; margin-bottom:28px;">
+        <h2 style="font-size:1.05rem; margin-bottom:16px;">Add a user manually</h2>
+        <div id="addUserMessage" class="form-message" role="alert"></div>
+        <form id="addUserForm" novalidate>
+          <div class="field-row">
+            <div class="field">
+              <label for="newFullName">Full name</label>
+              <input type="text" id="newFullName" required>
+            </div>
+            <div class="field">
+              <label for="newEmail">Email</label>
+              <input type="email" id="newEmail" required>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="newPhone">Phone number</label>
+              <input type="tel" id="newPhone" required placeholder="10-digit mobile number">
+            </div>
+            <div class="field">
+              <label for="newState">State</label>
+              <select id="newState" required><option value="" disabled selected>Loading states&hellip;</option></select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="newPassword">Initial password</label>
+              <input type="password" id="newPassword" required minlength="8">
+            </div>
+            <div class="field">
+              <label for="newReferCode">Referred by (optional)</label>
+              <input type="text" id="newReferCode" placeholder="Defaults to COMPANY">
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button type="submit" class="btn btn-primary" id="addUserSubmitBtn">Create user</button>
+            <button type="button" class="btn btn-ghost" id="cancelAddUserBtn">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="table-card">
+        <div class="table-card-head">
+          <h2>All users</h2>
+          <div id="paginationControls" style="display:flex; align-items:center; gap:12px; font-size:0.85rem; color:var(--text-muted);"></div>
+        </div>
+        <div id="usersTableWrap">
+          <p class="empty-state" style="padding:0 22px 22px;">Loading&hellip;</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/admin-shell.js"></script>
+  <script src="/assets/js/admin-users.js"></script>
+</body>
+</html>

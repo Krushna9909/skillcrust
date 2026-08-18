@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — SkillCrust</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/assets/js/theme.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <div id="appShellRoot"></div>
+
+    <main class="app-main">
+      <div class="page-head">
+        <h1 style="font-size:1.9rem;">Dashboard</h1>
+        <p id="welcomeLine">Loading your account&hellip;</p>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label"><span class="stat-icon" aria-hidden="true">⚡</span>Today</div>
+          <div class="stat-value" id="statToday">₹—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span class="stat-icon" aria-hidden="true">📈</span>Last 7 Days</div>
+          <div class="stat-value" id="statWeek">₹—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span class="stat-icon" aria-hidden="true">🗓</span>Last 30 Days</div>
+          <div class="stat-value" id="statMonth">₹—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span class="stat-icon" aria-hidden="true">🏆</span>All Time</div>
+          <div class="stat-value" id="statAllTime">₹—</div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h2>Revenue, last 30 days</h2>
+        <div class="chart-sub">Hover a bar for that day's total</div>
+        <div class="bar-chart" id="revenueChart"></div>
+      </div>
+
+      <div class="page-head" style="margin-top:8px;">
+        <h2 style="font-size:1.2rem;">Owned courses</h2>
+      </div>
+      <div class="grid" id="ownedCoursesGrid" style="margin-bottom:36px;">
+        <p class="empty-state">Loading&hellip;</p>
+      </div>
+
+      <div class="table-card">
+        <div class="table-card-head">
+          <h2>Recent referrals</h2>
+          <input type="search" class="search-input" id="referralSearch" placeholder="Search by name or refer code&hellip;">
+        </div>
+        <div id="referralsTableWrap">
+          <p class="empty-state" style="padding:0 22px 22px;">Loading&hellip;</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/app-shell.js"></script>
+  <script src="/assets/js/dashboard.js"></script>
+</body>
+</html>

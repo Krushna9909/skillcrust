@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillCrust — Unlock Skills. Unlock Yourself.</title>
+  <meta name="description" content="SkillCrust is a modern skill-learning platform: six practical, self-paced courses in editing, marketing, content, AI and business — built for outcomes, not theory.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <script src="/assets/js/theme.js"></script>
+</head>
+<body>
+  <div class="mesh-bg" aria-hidden="true"><span class="blob blob-1"></span><span class="blob blob-2"></span></div>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container nav">
+      <a href="/" class="brand" data-logo>Skill<span>Crust</span></a>
+      <nav aria-label="Primary">
+        <ul class="nav-links" id="navLinks">
+          <li><a href="/index.html#home">Home</a></li>
+          <li class="has-dropdown">
+            <a href="/courses.html">Courses ▾</a>
+            <div class="dropdown-panel" id="navCourseDropdown">
+              <a href="/courses.html">Skills Pro <span class="price">₹699</span></a>
+              <a href="/courses.html">Editing Pro <span class="price">₹1,499</span></a>
+              <a href="/courses.html">Marketing Pro <span class="price">₹2,299</span></a>
+              <a href="/courses.html">Content Pro <span class="price">₹4,150</span></a>
+              <a href="/courses.html">AI &amp; Automation Pro <span class="price">₹6,999</span></a>
+              <a href="/courses.html">Business Pro <span class="price">₹9,999</span></a>
+              <a href="/courses.html" class="all">View all courses →</a>
+            </div>
+          </li>
+          <li><a href="/index.html#about">About Us</a></li>
+          <li><a href="/index.html#stories">Success Stories</a></li>
+          <li><a href="/index.html#contact">Contact Us</a></li>
+          <li><a href="/login.html">Log in</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a href="/signup.html" class="btn btn-primary">Get Started</a>
+        <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="sc-hero" id="home">
+      <div class="container sc-hero-grid">
+        <div>
+          <span class="eyebrow">Unlock Skills. Unlock Yourself.</span>
+          <h1>Your Skills. Your Future. <span class="grad-anim">Unlocked.</span></h1>
+          <p class="lede">Practical, self-paced courses in editing, marketing, content, AI and business — designed to take you from beginner to genuinely employable, at your own speed.</p>
+          <div class="hero-actions">
+            <a href="/courses.html" class="btn btn-primary">Explore Courses</a>
+            <a href="/index.html#how-it-works" class="btn btn-ghost">See How It Works</a>
+          </div>
+          <div class="stat-strip glass">
+            <div><strong data-count="10000" id="statStudents">0</strong><span>Students learning</span></div>
+            <div><strong id="heroCourseCount">—</strong><span>Career-ready courses</span></div>
+            <div><strong data-count="4.8" data-decimals="1">0</strong><span>Average rating ★</span></div>
+          </div>
+        </div>
+        <div class="hero-stage reveal is-visible" aria-hidden="true">
+          <span class="hs-spark"></span><span class="hs-spark"></span><span class="hs-spark"></span>
+          <div class="hs-orbit">
+            <div class="hs-ring"><span class="hs-sat">🎬 Editing</span></div>
+            <div class="hs-ring r2"><span class="hs-sat">📈 Marketing</span></div>
+            <div class="hs-ring r3"><span class="hs-sat">🤖 AI</span></div>
+            <div class="hs-core"><b>SkillCrust</b></div>
+          </div>
+          <div class="hs-card hs-c1"><span class="dot"></span>Students learning<b>10,000+</b></div>
+          <div class="hs-card hs-c2"><span class="dot"></span>Lessons completed<b>128</b></div>
+          <div class="hs-card hs-c3"><span class="dot"></span>Self-paced access<b>Lifetime</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="courses-preview">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Our Courses</span>
+          <h2>Six skill stacks. One clear path.</h2>
+          <p>Start where you are — every course is a complete stack you can finish, use and build on.</p>
+        </div>
+        <div class="grid" id="coursePreviewGrid">
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+        </div>
+        <div class="text-center mt-lg reveal">
+          <a href="/courses.html" class="btn btn-ghost">View all courses</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="how-it-works">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">How It Works</span>
+          <h2>Four steps. No fluff.</h2>
+          <p>From picking a stack to putting the skill to work — here's the whole path.</p>
+        </div>
+        <div class="roadmap">
+          <div class="roadmap-step reveal-left"><div class="roadmap-node">01</div><h3>Pick a course</h3><p>Choose the skill stack that matches where you are right now.</p></div>
+          <div class="roadmap-step reveal-left" style="--reveal-delay:0.12s"><div class="roadmap-node">02</div><h3>Create your account</h3><p>One quick signup unlocks your dashboard and your lessons instantly.</p></div>
+          <div class="roadmap-step reveal-left" style="--reveal-delay:0.24s"><div class="roadmap-node">03</div><h3>Learn at your pace</h3><p>Self-paced lessons, on mobile or desktop, yours for life.</p></div>
+          <div class="roadmap-step reveal-left" style="--reveal-delay:0.36s"><div class="roadmap-node">04</div><h3>Put it to work</h3><p>Freelance, create, grow an audience, or build your own thing.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="wallet">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Your Learning Wallet</span>
+          <h2>One dashboard for everything you unlock</h2>
+          <p>Track the courses you own, your progress and your account activity in a single clean console.</p>
+        </div>
+        <div class="wallet-module">
+          <div class="wallet-visual reveal-left">
+            <div class="wallet-card">
+              <div class="wallet-label">Available balance</div>
+              <div class="wallet-amount">₹24,750</div>
+              <div class="wallet-rows">
+                <div class="wallet-row"><span>Courses unlocked</span><b>6</b></div>
+                <div class="wallet-row"><span>Lessons completed</span><b>128</b></div>
+                <div class="wallet-row"><span>Withdrawals processed</span><b>₹12,400</b></div>
+              </div>
+            </div>
+          </div>
+          <div class="reveal-right">
+            <h3 style="font-size:1.45rem; margin-bottom:10px;">Built like a fintech console, not a course portal</h3>
+            <p class="lede" style="margin:0;">Everything is measured, timestamped and readable at a glance — so you always know exactly where you stand.</p>
+            <ul class="wallet-points">
+              <li>Live balance and activity, updated the moment something changes</li>
+              <li>Secure, encrypted KYC before any payout is released</li>
+              <li>Bank or UPI withdrawals, with full status history</li>
+              <li>Every course you own, unlocked for life</li>
+            </ul>
+            <div class="hero-actions" style="margin-top:26px;">
+              <a href="/signup.html" class="btn btn-primary">Create your account</a>
+              <a href="/courses.html" class="btn btn-ghost">Browse courses</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">About Us</span>
+          <h2>Skill-first learning, built for the real world</h2>
+          <p>SkillCrust exists to make practical, job-ready and business-ready skills accessible and affordable. No fluff, no theory-only lectures — every course is built around real outcomes: freelancing, content creation, digital marketing, AI tools and building a business. Courses are structured in progressive tiers, so you can start small and grow into advanced skill stacks as your confidence grows.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="founders">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Meet the Founders</span>
+          <h2>The people behind SkillCrust</h2>
+        </div>
+        <div class="founder-grid">
+          <div class="founder-card glass reveal">
+            <img src="/assets/img/founder-1.jpg" alt="Portrait of Co-Founder &amp; CEO" width="640" height="640" loading="lazy">
+            <div>
+              <span class="role">Co-Founder &amp; CEO</span>
+              <h3>[Founder Name 1]</h3>
+              <p>With a background in digital marketing and a passion for making skill-based education accessible, they started SkillCrust to close the gap between traditional education and what today's job market actually demands.</p>
+            </div>
+          </div>
+          <div class="founder-card glass reveal" style="--reveal-delay:0.08s">
+            <img src="/assets/img/founder-2.jpg" alt="Portrait of Co-Founder &amp; Head of Curriculum" width="640" height="640" loading="lazy">
+            <div>
+              <span class="role">Co-Founder &amp; Head of Curriculum</span>
+              <h3>[Founder Name 2]</h3>
+              <p>Years spent mastering content, design and automation tools now go into SkillCrust's curriculum — practical, up-to-date, and built for how the next generation actually learns.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="why">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Why Choose Us</span>
+          <h2>Built different, on purpose</h2>
+        </div>
+        <div class="why-grid">
+          <div class="why-card glass reveal-left" style="--reveal-delay:0.00s"><div class="ico">⚡</div><h3>Practical, Not Theoretical</h3><p>Every course is built around real skills you can use immediately.</p></div>
+          <div class="why-card glass reveal-left" style="--reveal-delay:0.09s"><div class="ico">🚀</div><h3>Beginner-Friendly, Pro-Level Outcomes</h3><p>Structured tiers so anyone can start, regardless of experience.</p></div>
+          <div class="why-card glass reveal-left" style="--reveal-delay:0.18s"><div class="ico">∞</div><h3>Lifetime Access</h3><p>Learn at your own pace and revisit any lesson, anytime.</p></div>
+          <div class="why-card glass reveal-left" style="--reveal-delay:0.27s"><div class="ico">🎯</div><h3>Expert-Curated Curriculum</h3><p>Content built around what's actually working right now.</p></div>
+          <div class="why-card glass reveal-left" style="--reveal-delay:0.36s"><div class="ico">💸</div><h3>Affordable Skill Stacks</h3><p>Premium learning without the premium price tag.</p></div>
+          <div class="why-card glass reveal-left" style="--reveal-delay:0.45s"><div class="ico">🤝</div><h3>A Community of Learners</h3><p>You're not learning alone — thousands are on the same path.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="stories">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Success Stories</span>
+          <h2>What our students have to say</h2>
+        </div>
+        <div class="stories-marquee reveal">
+          <div class="stories-track">
+            <div class="review-card glass"><div class="stars">★★★★★</div><p>&ldquo;I went from knowing nothing about editing to freelancing on the side within a month. The Canva and Premiere Pro modules alone were worth it.&rdquo;</p><div class="who">Aditi R.<small>Editing Pro</small></div></div>
+            <div class="review-card glass"><div class="stars">★★★★★</div><p>&ldquo;The Instagram growth strategies actually work. My personal page went from 2K to 15K followers in 10 weeks.&rdquo;</p><div class="who">Rohan K.<small>Marketing Pro</small></div></div>
+            <div class="review-card glass"><div class="stars">★★★★</div><p>&ldquo;Great starting point if you’re nervous about public speaking. The confidence-building content genuinely helped.&rdquo;</p><div class="who">Simran G.<small>Skills Pro</small></div></div>
+            <div class="review-card glass"><div class="stars">★★★★★</div><p>&ldquo;Learning to build automations with AI tools felt like unlocking a cheat code for freelancing.&rdquo;</p><div class="who">Yash T.<small>AI &amp; Automation Pro</small></div></div>
+            <div class="review-card glass"><div class="stars">★★★★★</div><p>&ldquo;Finally a course that teaches content planning AND monetization, not just “how to shoot a reel.”&rdquo;</p><div class="who">Neha P.<small>Content Pro</small></div></div>
+            <div class="review-card glass"><div class="stars">★★★★</div><p>&ldquo;Dense but incredibly practical. The e-commerce and dropshipping breakdown alone justified the price.&rdquo;</p><div class="who">Kabir S.<small>Business Pro</small></div></div>
+            <div aria-hidden="true" class="review-card glass"><div class="stars">★★★★★</div><p>&ldquo;I went from knowing nothing about editing to freelancing on the side within a month. The Canva and Premiere Pro modules alone were worth it.&rdquo;</p><div class="who">Aditi R.<small>Editing Pro</small></div></div>
+            <div aria-hidden="true" class="review-card glass"><div class="stars">★★★★★</div><p>&ldquo;The Instagram growth strategies actually work. My personal page went from 2K to 15K followers in 10 weeks.&rdquo;</p><div class="who">Rohan K.<small>Marketing Pro</small></div></div>
+            <div aria-hidden="true" class="review-card glass"><div class="stars">★★★★</div><p>&ldquo;Great starting point if you’re nervous about public speaking. The confidence-building content genuinely helped.&rdquo;</p><div class="who">Simran G.<small>Skills Pro</small></div></div>
+            <div aria-hidden="true" class="review-card glass"><div class="stars">★★★★★</div><p>&ldquo;Learning to build automations with AI tools felt like unlocking a cheat code for freelancing.&rdquo;</p><div class="who">Yash T.<small>AI &amp; Automation Pro</small></div></div>
+            <div aria-hidden="true" class="review-card glass"><div class="stars">★★★★★</div><p>&ldquo;Finally a course that teaches content planning AND monetization, not just “how to shoot a reel.”&rdquo;</p><div class="who">Neha P.<small>Content Pro</small></div></div>
+            <div aria-hidden="true" class="review-card glass"><div class="stars">★★★★</div><p>&ldquo;Dense but incredibly practical. The e-commerce and dropshipping breakdown alone justified the price.&rdquo;</p><div class="who">Kabir S.<small>Business Pro</small></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">FAQs</span>
+          <h2>Everything you might be wondering</h2>
+        </div>
+        <div class="faq-list">
+          <details class="faq-item reveal"><summary>Do I need any prior experience to join?</summary><p>No — courses are structured from beginner-friendly foundations up to advanced, pro-level skill stacks.</p></details>
+          <details class="faq-item reveal"><summary>How do I access my course after purchase?</summary><p>Instantly — once your purchase is confirmed, the course appears in "My Courses" in your dashboard.</p></details>
+          <details class="faq-item reveal"><summary>Is this live or self-paced?</summary><p>Self-paced. Learn on your own schedule and revisit lessons anytime.</p></details>
+          <details class="faq-item reveal"><summary>Can I upgrade to a higher course later?</summary><p>Yes — you can upgrade anytime from your dashboard, and your existing courses stay unlocked.</p></details>
+          <details class="faq-item reveal"><summary>Do I get a certificate after completion?</summary><p>Certificates are on our roadmap.</p></details>
+          <details class="faq-item reveal"><summary>Is my payment secure?</summary><p>Yes — all transactions are processed securely.</p></details>
+          <details class="faq-item reveal"><summary>What is your refund policy?</summary><p>See our <a href="/refund.html">Refund Policy</a> page for full details.</p></details>
+          <details class="faq-item reveal"><summary>Will I get support if I have doubts?</summary><p>Yes — learner support is available; reach us at hello@skillcrust.com.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <section id="follow">
+      <div class="container text-center">
+        <div class="section-head reveal">
+          <span class="eyebrow">Follow Us</span>
+          <h2>Stay in the loop</h2>
+        </div>
+        <div class="social-row reveal">
+          <a href="#" class="glass"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg><span>Instagram</span></a>
+          <a href="#" class="glass"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="m10.5 9.2 4.6 2.8-4.6 2.8z" fill="currentColor" stroke="none"/></svg><span>YouTube</span></a>
+          <a href="#" class="glass"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 4 3 11l5 2 2 6 3-4 5 4z"/><path d="m8 13 10-9"/></svg><span>Telegram</span></a>
+          <a href="#" class="glass"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-3.3-6.5"/><path d="M20 4v5h-5"/><path d="M8.6 9.2c.3 2.4 2.3 4.6 4.8 5.2l1-1.4 2 .9-.5 1.7c-2.9.5-6.6-2.4-7.7-5.5z" fill="currentColor" stroke="none"/></svg><span>WhatsApp Channel</span></a>
+          <a href="#" class="glass"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7.5 10.5V17M7.5 7.4v.1M11.5 17v-3.6a2.4 2.4 0 0 1 4.8 0V17"/></svg><span>LinkedIn</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="cta-band glass reveal">
+          <span class="eyebrow">Get started</span>
+          <h2>Learn fast. Level up faster.</h2>
+          <p class="lede" style="margin:0 auto;">Pick a course today and start building a skill you can actually use.</p>
+          <div class="hero-actions">
+            <a href="/signup.html" class="btn btn-primary">Enroll Now</a>
+            <a href="/courses.html" class="btn btn-ghost">See the courses</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="contact">
+    <div class="container footer-grid-4">
+      <div>
+        <div class="brand" style="font-size:1.15rem;" data-logo>Skill<span>Crust</span></div>
+        <p style="margin-top:10px; max-width:34ch;">Unlock real-world skills. Practical, self-paced courses built for people who want to learn fast and build faster.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="m10.5 9.2 4.6 2.8-4.6 2.8z" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" aria-label="Telegram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M21 4 3 11l5 2 2 6 3-4 5 4z"/><path d="m8 13 10-9"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M7.5 10.5V17M7.5 7.4v.1M11.5 17v-3.6a2.4 2.4 0 0 1 4.8 0V17"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h4>Platform</h4>
+        <a href="/courses.html">All courses</a>
+        <a href="/index.html#about">About Us</a>
+        <a href="/index.html#how-it-works">How it works</a>
+        <a href="/index.html#contact">Contact Us</a>
+        <a href="/login.html">Login</a>
+        <a href="/signup.html">Register</a>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="/terms.html">Disclaimer</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/refund.html">Refund Policy</a>
+        <a href="/terms.html">Terms &amp; Conditions</a>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <a href="tel:+910000000000">+91 00000 00000</a>
+        <a href="mailto:hello@skillcrust.com">hello@skillcrust.com</a>
+        <p style="margin-top:12px; font-size:0.84rem; color:var(--text-faint);">Support hours: Mon–Sat, 10am–7pm IST</p>
+      </div>
+    </div>
+    <div class="container">
+      <div class="footer-bottom">
+        <span>© <span data-year>2026</span> SkillCrust. All rights reserved.</span>
+        <span>Unlock Skills · Unlock Yourself</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/course-copy.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/courses-preview.js"></script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create your account — SkillCrust</title>
+  <meta name="description" content="Create your SkillCrust account, pick a course and start earning from every referral.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <script src="/assets/js/theme.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#authMain">Skip to content</a>
+  <main class="auth-shell">
+    <aside class="auth-aside">
+      <a href="/" class="brand" data-logo>Skill<span>Crust</span></a>
+      <div>
+        <span class="eyebrow">Unlock Skills · Unlock Yourself</span>
+        <h2>Skills that actually <span class="grad-anim">pay off.</span></h2>
+        <p class="lede">Six practical skill stacks — editing, marketing, content, AI and business — taught self-paced, built for real outcomes.</p>
+        <ul class="auth-points">
+          <li>Lifetime access to every lesson you unlock</li>
+          <li>Learn on mobile or desktop, at your own pace</li>
+          <li>Beginner-friendly tiers you can grow through</li>
+        </ul>
+      </div>
+      <p class="faint" style="margin:0;font-size:0.82rem;">SkillCrust — practical, self-paced skill courses.</p>
+    </aside>
+    <div class="auth-main" id="authMain">
+      <div class="auth-card" style="max-width:520px;">
+        <div class="auth-topbar">
+          <a href="/" class="brand" data-logo style="font-size:1.05rem;">Skill<span>Crust</span></a>
+          <span data-theme-slot></span>
+        </div>
+
+        <h1>Create your account</h1>
+        <p>Every account starts with one course purchase — pick or confirm your course below.</p>
+
+        <div id="formMessage" class="form-message" role="alert"></div>
+
+      <form id="signupForm" novalidate>
+        <div class="field">
+          <label for="courseId">Course</label>
+          <select id="courseId" name="courseId" required>
+            <option value="" disabled selected>Loading courses…</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="referCode">Refer code <span id="referCodeHint" class="faint"></span></label>
+          <input type="text" id="referCode" name="referCode" placeholder="Optional — leave blank if you don't have one" autocomplete="off">
+        </div>
+
+        <div class="field">
+          <label for="fullName">Full name</label>
+          <input type="text" id="fullName" name="fullName" required autocomplete="name">
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required autocomplete="email">
+          </div>
+          <div class="field">
+            <label for="phone">Phone number</label>
+            <input type="tel" id="phone" name="phone" required autocomplete="tel" placeholder="10-digit mobile number">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="state">State</label>
+          <select id="state" name="state" required>
+            <option value="" disabled selected>Loading states…</option>
+          </select>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required autocomplete="new-password" minlength="8" data-reveal>
+          </div>
+          <div class="field">
+            <label for="confirmPassword">Confirm password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required autocomplete="new-password" minlength="8" data-reveal>
+          </div>
+        </div>
+
+        <div class="checkbox-field">
+          <input type="checkbox" id="agreeToTerms" name="agreeToTerms" required>
+          <label for="agreeToTerms">I agree to the <a href="/privacy.html" target="_blank">Privacy Policy</a> and <a href="/terms.html" target="_blank">Terms &amp; Conditions</a>.</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="submitBtn">Create account</button>
+      </form>
+
+        <p class="auth-switch">Already have an account? <a href="/login.html">Log in</a></p>
+      </div>
+    </div>
+  </main>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/signup.js"></script>
+</body>
+</html>

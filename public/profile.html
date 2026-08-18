@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile — SkillCrust</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/assets/js/theme.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <div id="appShellRoot"></div>
+
+    <main class="app-main">
+      <div class="page-head">
+        <h1 style="font-size:1.9rem;">Profile</h1>
+      </div>
+
+      <div class="profile-header">
+        <div class="profile-photo" id="profilePhotoDisplay">?</div>
+        <div class="profile-meta">
+          <h2 id="profileNameDisplay" style="font-size:1.3rem; margin-bottom:2px;">&hellip;</h2>
+          <div class="email" id="profileEmailDisplay"></div>
+        </div>
+        <div class="photo-upload">
+          <label for="photoInput" class="btn btn-primary" style="cursor:pointer;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l1.6-2.2h6.8L17 8h3v11H4z"/><circle cx="12" cy="13.2" r="3.4"/></svg>
+            Change photo
+          </label>
+          <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" hidden>
+          <span class="field-note">JPG, PNG or WebP &middot; up to 2&nbsp;MB</span>
+        </div>
+      </div>
+
+      <div id="photoMessage" class="form-message" role="alert"></div>
+
+      <h2 style="font-size:1.15rem; margin-bottom:14px;">Edit details</h2>
+      <div id="detailsMessage" class="form-message" role="alert"></div>
+      <div class="card" style="margin-bottom:24px;">
+        <form id="detailsForm" novalidate>
+          <div class="field-row">
+            <div class="field">
+              <label for="fullName">Full name</label>
+              <input type="text" id="fullName" required>
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input type="email" id="email" required>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="phone">Phone number</label>
+              <input type="tel" id="phone" required>
+            </div>
+            <div class="field">
+              <label for="state">State</label>
+              <select id="state" required><option value="" disabled>Loading states&hellip;</option></select>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="detailsSubmitBtn">Save changes</button>
+        </form>
+      </div>
+
+      <hr class="section-divider">
+
+      <h2 style="font-size:1.15rem; margin-bottom:14px;">Change password</h2>
+      <div id="passwordMessage" class="form-message" role="alert"></div>
+      <div class="card">
+        <form id="passwordForm" novalidate>
+          <div class="field">
+            <label for="currentPassword">Current password</label>
+            <input type="password" id="currentPassword" data-reveal required autocomplete="current-password">
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="newPassword">New password</label>
+              <input type="password" id="newPassword" data-reveal required minlength="8" autocomplete="new-password">
+            </div>
+            <div class="field">
+              <label for="confirmNewPassword">Confirm new password</label>
+              <input type="password" id="confirmNewPassword" data-reveal required minlength="8" autocomplete="new-password">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="passwordSubmitBtn">Update password</button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/app-shell.js"></script>
+  <script src="/assets/js/profile.js"></script>
+</body>
+</html>

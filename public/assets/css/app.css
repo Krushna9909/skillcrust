@@ -1,0 +1,815 @@
+/**
+ * public/assets/css/app.css
+ *
+ * Authenticated-app layer — loaded ALONGSIDE styles.css (never instead of
+ * it) on every page behind the sidebar, plus the admin console. It reuses
+ * styles.css's tokens, typography and primitives (.btn, .card, .badge,
+ * .data-table, .skeleton) and only adds shell layout + dashboard-specific
+ * components: stat cards, charts, the referral network, wallet surfaces,
+ * the leaderboard podium and admin tooling.
+ *
+ * Everything here is token-driven, so light and dark themes come for free
+ * from the [data-theme] switch handled in theme.js.
+ */
+
+/* --- App shell --------------------------------------------------------------- */
+.app-shell {
+  display: grid;
+  grid-template-columns: 268px minmax(0, 1fr);
+  /* Row 1 is the topbar, row 2 the page body; the sidebar spans both so the
+     topbar doesn't get stretched down a full-viewport-tall single row. */
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 100vh;
+  background: var(--bg);
+}
+@media (max-width: 980px) { .app-shell { grid-template-columns: minmax(0, 1fr); } }
+
+/* app-shell.js injects the sidebar/backdrop/topbar into #appShellRoot —
+   display:contents makes those injected elements the real grid items. */
+#appShellRoot { display: contents; }
+
+.app-sidebar {
+  grid-row: 1 / -1;
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100vh;
+  background: var(--bg-elevated);
+  border-right: 1px solid var(--border-soft);
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.app-sidebar .brand { display: flex; margin-bottom: 6px; padding: 0 6px; }
+
+@media (max-width: 980px) {
+  .app-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(300px, 86vw);
+    height: 100dvh;
+    z-index: 90;
+    transform: translateX(-101%);
+    transition: transform 0.28s var(--ease);
+    box-shadow: var(--shadow-pop);
+  }
+  .app-sidebar.is-open { transform: none; }
+}
+
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 85;
+  background: rgba(4, 7, 14, 0.6);
+  backdrop-filter: blur(2px);
+  animation: fade-in 0.2s var(--ease) both;
+}
+.sidebar-backdrop.is-open { display: block; }
+@media (min-width: 981px) { .sidebar-backdrop { display: none !important; } }
+
+.app-nav { list-style: none; margin: 0; padding: 0; flex: 1; display: grid; gap: 2px; align-content: start; }
+.app-nav a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 13px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: color var(--dur) var(--ease), background-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.app-nav a .icon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  font-size: 0.78rem;
+  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.app-nav a:hover { color: var(--text); background: var(--surface); transform: translateX(2px); }
+.app-nav a.is-active { color: var(--text); background: var(--accent-soft); }
+.app-nav a.is-active .icon { background: var(--accent); border-color: transparent; color: #fff; }
+.app-nav a.is-active::before {
+  content: '';
+  position: absolute;
+  left: -18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 22px;
+  border-radius: 0 3px 3px 0;
+  background: var(--accent);
+}
+
+.app-sidebar-footer {
+  border-top: 1px solid var(--border-soft);
+  padding-top: 16px;
+  display: grid;
+  gap: 12px;
+}
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  min-width: 0;
+}
+.sidebar-user strong { display: block; font-size: 0.88rem; color: var(--text); }
+.sidebar-user span, .sidebar-user small { display: block; font-size: 0.75rem; color: var(--text-faint); }
+.sidebar-user > div { min-width: 0; overflow: hidden; }
+.sidebar-user .avatar,
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 50%;
+  background: linear-gradient(140deg, var(--accent), var(--money));
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  overflow: hidden;
+}
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.sidebar-wallet {
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(150deg, color-mix(in oklab, var(--money) 18%, var(--surface)), var(--surface));
+  border: 1px solid color-mix(in oklab, var(--money) 28%, transparent);
+}
+.sidebar-wallet span { display: block; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); }
+.sidebar-wallet strong {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  color: var(--money);
+  letter-spacing: -0.02em;
+}
+
+/* --- Topbar ---------------------------------------------------------------------- */
+.app-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px clamp(18px, 3vw, 34px);
+  background: color-mix(in oklab, var(--bg) 82%, transparent);
+  backdrop-filter: saturate(160%) blur(14px);
+  border-bottom: 1px solid var(--border-soft);
+}
+.app-topbar .brand { display: none; }
+.app-topbar-title { font-family: var(--font-display); font-weight: 600; font-size: 1rem; }
+.app-topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.app-topbar-toggle {
+  display: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+@media (max-width: 980px) {
+  .app-topbar-toggle { display: grid; }
+  .app-topbar .brand { display: flex; }
+}
+
+.app-main {
+  padding: clamp(20px, 3vw, 34px) clamp(18px, 3vw, 34px) 64px;
+  max-width: 1360px;
+  width: 100%;
+  animation: fade-up 0.35s var(--ease) both;
+}
+.app-shell > main, .app-shell > .app-main { min-width: 0; }
+
+/* --- Stat cards ------------------------------------------------------------------ */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  margin-bottom: 26px;
+}
+/* Two-up on phones: four full-width stat cards would push the chart
+   entirely below the fold. */
+@media (max-width: 640px) {
+  .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .stat-grid .stat-value { font-size: 1.3rem; }
+}
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  animation: fade-up 0.4s var(--ease) both;
+}
+.stat-card:hover { transform: translateY(-3px); border-color: var(--border-strong); box-shadow: var(--shadow-pop); }
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent 70%);
+  opacity: 0.7;
+}
+.stat-card.is-money::after { background: linear-gradient(90deg, var(--money), transparent 70%); }
+.stat-card.is-warn::after { background: linear-gradient(90deg, var(--warn), transparent 70%); }
+.stat-label {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.stat-value {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: clamp(1.45rem, 2.4vw, 1.85rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.stat-card.is-money .stat-value { color: var(--money); }
+.stat-sub { font-size: 0.78rem; color: var(--text-faint); margin-top: 6px; }
+.stat-card:nth-child(2) { animation-delay: 0.05s; }
+.stat-card:nth-child(3) { animation-delay: 0.1s; }
+.stat-card:nth-child(4) { animation-delay: 0.15s; }
+
+/* --- Charts ----------------------------------------------------------------------- */
+.chart-card {
+  padding: 22px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 26px;
+}
+.chart-card h2, .chart-card h3 { margin-bottom: 4px; font-size: 1.15rem; }
+/* Card headings are section labels, not page titles — keep them off the
+   display type scale so the h1 stays the only large heading on the page. */
+.table-card-head h2, .table-card-head h3 { font-size: 1.15rem; }
+.page-head h2 { font-size: 1.2rem; }
+.chart-sub { margin-bottom: 18px; }
+
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 190px;
+  padding-top: 10px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.bar {
+  flex: 1;
+  min-width: 3px;
+  min-height: 2px;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg, var(--accent), color-mix(in oklab, var(--accent) 30%, transparent));
+  transform-origin: bottom;
+  animation: bar-grow 0.6s var(--ease) both;
+  transition: filter var(--dur) var(--ease);
+  position: relative;
+  cursor: default;
+}
+.bar:hover { filter: brightness(1.25); }
+.bar[data-value='0'] { background: var(--border); }
+@keyframes bar-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+/* --- Affiliate links / referral network ------------------------------------------- */
+.link-card {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.link-url {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+}
+.link-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn.is-copied { --btn-bg: var(--money); --btn-fg: #04231b; border-color: transparent; }
+
+.referral-tree {
+  display: grid;
+  gap: 14px;
+  padding: 24px;
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(circle at 50% 0%, var(--accent-soft), transparent 60%),
+    var(--surface);
+  border: 1px solid var(--border);
+}
+.tree-level { display: grid; gap: 8px; justify-items: center; }
+.tree-level-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.tree-nodes { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.tree-node {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--text);
+  animation: fade-up 0.4s var(--ease) both;
+}
+.tree-node.is-you {
+  background: var(--accent);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 700;
+  animation: fade-up 0.4s var(--ease) both, pulse-ring 2.4s ease-out infinite 0.6s;
+}
+.tree-connector { width: 2px; height: 22px; background: linear-gradient(var(--accent), transparent); margin: 0 auto; }
+
+/* --- Wallet -------------------------------------------------------------------------- */
+.wallet-balance-card {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(22px, 3vw, 32px);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(145deg, color-mix(in oklab, var(--money) 20%, var(--surface)), var(--surface));
+  border: 1px solid color-mix(in oklab, var(--money) 30%, transparent);
+  box-shadow: var(--shadow-pop);
+  margin-bottom: 22px;
+}
+.wallet-balance-card::after {
+  content: '';
+  position: absolute;
+  inset: -60% -30% auto auto;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, color-mix(in oklab, var(--money) 30%, transparent), transparent 65%);
+  filter: blur(20px);
+  pointer-events: none;
+}
+.wallet-balance-card > * { position: relative; }
+.wallet-balance-card .stat-label { color: color-mix(in oklab, var(--money) 60%, var(--text-muted)); }
+.wallet-balance-card .stat-value { font-size: clamp(2rem, 5vw, 2.9rem); color: var(--money); }
+.wallet-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 22px; align-items: start; }
+@media (max-width: 900px) { .wallet-grid { grid-template-columns: 1fr; } }
+.withdraw-form-card {
+  padding: 24px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  position: sticky;
+  top: 92px;
+}
+@media (max-width: 900px) { .withdraw-form-card { position: static; } }
+.money-in { animation: money-pop 0.6s var(--ease) both; }
+@keyframes money-pop {
+  0% { transform: scale(0.94); opacity: 0; }
+  60% { transform: scale(1.03); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+/* --- KYC ------------------------------------------------------------------------------ */
+.kyc-status-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 22px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  margin-bottom: 22px;
+}
+.kyc-status-card .status-pill { margin-left: auto; }
+.masked-fields { display: grid; gap: 8px; font-size: 0.88rem; color: var(--text-muted); }
+
+/* --- Leaderboard ------------------------------------------------------------------------ */
+.podium {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  align-items: end;
+  margin-bottom: 26px;
+}
+@media (max-width: 720px) { .podium { grid-template-columns: 1fr; } }
+.podium-card {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  text-align: center;
+  padding: 22px 16px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  animation: fade-up 0.45s var(--ease) both;
+}
+.podium-card.rank-1 {
+  border-color: color-mix(in oklab, var(--warn) 45%, transparent);
+  background: linear-gradient(160deg, var(--warn-soft), var(--surface));
+  padding-block: 32px;
+}
+.podium-card.rank-2 { animation-delay: 0.06s; }
+.podium-card.rank-3 { animation-delay: 0.12s; }
+.podium-medal {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--rank) 18%, transparent);
+  color: var(--rank);
+  border: 1px solid color-mix(in oklab, var(--rank) 34%, transparent);
+}
+.podium-card { --rank: var(--text-muted); }
+.podium-card.rank-1 { --rank: var(--gold, #d4a017); }
+.podium-card.rank-2 { --rank: var(--text-muted); }
+.podium-card.rank-3 { --rank: #b06a3b; }
+.podium-card strong { font-size: 1rem; }
+.podium-card .mono { color: var(--money); font-size: 1.1rem; }
+
+.rank, .rank-badge {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.rank-1, .rank-badge.rank-1 { background: var(--warn-soft); border-color: color-mix(in oklab, var(--warn) 40%, transparent); color: var(--warn); }
+.rank-2, .rank-badge.rank-2 { background: var(--surface-raised); color: var(--text); }
+.rank-3, .rank-badge.rank-3 { background: color-mix(in oklab, #cd7f32 18%, transparent); border-color: color-mix(in oklab, #cd7f32 40%, transparent); color: #cd7f32; }
+.data-table tr.is-me { background: var(--accent-soft); }
+.data-table tr.is-me td { color: var(--text); }
+
+/* --- Profile ---------------------------------------------------------------------------- */
+.profile-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  padding: 24px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(140deg, var(--surface-raised), var(--surface));
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 24px;
+}
+.profile-photo {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--border-strong);
+  background: linear-gradient(140deg, var(--accent), var(--money));
+  color: #fff;
+  flex: none;
+  /* The element holds either an <img> or a fallback initial, so it has to
+     centre its own text content, not just crop a child image. */
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 600;
+  line-height: 1;
+}
+.profile-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.profile-meta { display: grid; gap: 4px; min-width: 0; }
+.profile-meta h1, .profile-meta h2 { margin: 0; font-size: 1.3rem; }
+.profile-meta span { font-size: 0.88rem; color: var(--text-muted); }
+.profile-actions { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+
+.panel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 22px; }
+
+/* --- Admin ------------------------------------------------------------------------------ */
+.admin-course-card, .flag-card {
+  padding: 20px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 16px;
+  transition: border-color var(--dur) var(--ease);
+}
+.admin-course-card:hover, .flag-card:hover { border-color: var(--border-strong); }
+.flag-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.flag-head h3 { margin: 0; }
+.flag-users {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+.flag-users span {
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border);
+}
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.filter-bar .search-input, .search-input { max-width: 320px; }
+.filter-bar select { width: auto; min-width: 160px; }
+
+/* Admin console uses a distinct accent so it is never mistaken for the user app. */
+body.is-admin {
+  --accent: #7c5cff;
+  --accent-hover: #9a80ff;
+  --accent-soft: rgba(124, 92, 255, 0.15);
+}
+body.is-admin[data-theme='light'] { --accent: #6244e0; --accent-hover: #4e33c4; }
+
+/* --- Utility ------------------------------------------------------------------------------ */
+.stack { display: grid; gap: 14px; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.row-end { margin-left: auto; }
+.muted { color: var(--text-muted); }
+.faint { color: var(--text-faint); }
+.hidden { display: none !important; }
+
+/* Affiliate link grid + the "how your chain pays" explainer card. */
+.link-grid { display: grid; gap: 16px; }
+.tree-card { margin-bottom: 22px; }
+.tree {
+  display: grid;
+  gap: 14px;
+  padding: 22px 18px;
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(circle at 50% 0%, var(--accent-soft), transparent 62%),
+    var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+/* Stat-card label icon — decorative, sized to sit on the label baseline. */
+.stat-icon { margin-right: 7px; font-size: 0.95em; opacity: 0.85; }
+
+/* Purchasable course card gets a subtle accent edge vs. an owned one. */
+.course-card.is-offer { border-color: color-mix(in oklab, var(--accent) 28%, var(--border)); }
+.course-card.is-offer:hover { border-color: var(--accent); }
+
+/* Stacked cards on a page need breathing room between them. */
+.app-main > .table-card { margin-top: 22px; }
+
+/* =========================================================================
+   Console motion & interaction layer (user app + admin panel).
+   Presentation only — no data or endpoint behaviour depends on this.
+   ========================================================================= */
+
+/* --- Navigation typography ---------------------------------------------- */
+.app-nav a,
+.app-topbar-title,
+.app-sidebar .brand,
+.sidebar-user strong {
+  font-family: var(--font-display);
+  letter-spacing: -0.005em;
+}
+.app-nav a {
+  overflow: hidden;
+  font-size: 0.915rem;
+  transition: color 0.3s var(--ease), background-color 0.3s var(--ease),
+              transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.app-nav a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(100deg, transparent, color-mix(in oklab, var(--accent) 26%, transparent), transparent);
+  transform: translateX(-110%);
+  transition: transform 0.6s var(--ease);
+  pointer-events: none;
+}
+.app-nav a:hover {
+  transform: translateX(5px);
+  box-shadow: 0 10px 24px -18px color-mix(in oklab, var(--accent) 90%, transparent);
+}
+.app-nav a:hover::after { transform: translateX(110%); }
+.app-nav a:hover .icon {
+  border-color: color-mix(in oklab, var(--accent) 55%, transparent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  transform: scale(1.06);
+}
+.app-nav a .icon { transition: transform 0.3s var(--ease), background-color 0.3s var(--ease), border-color 0.3s var(--ease), color 0.3s var(--ease); }
+.app-nav a.is-active { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 30%, transparent); }
+
+/* Sidebar footer / profile block alignment */
+.app-sidebar-footer { margin-top: auto; align-content: end; }
+.sidebar-user { align-items: center; transition: border-color 0.3s var(--ease), transform 0.3s var(--ease), box-shadow 0.3s var(--ease); }
+.sidebar-user:hover { border-color: color-mix(in oklab, var(--accent) 40%, transparent); transform: translateY(-2px); box-shadow: var(--shadow-card); }
+.sidebar-user > div { display: grid; gap: 2px; line-height: 1.25; }
+.sidebar-user .avatar { align-self: center; }
+
+/* --- Page entrance ------------------------------------------------------- */
+.page-head { animation: fade-up 0.45s var(--ease) both; }
+.app-main > .card,
+.app-main > .table-card,
+.app-main > .panel-grid,
+.app-main > .stat-grid,
+.admin-course-card,
+.flag-card { animation: fade-up 0.5s var(--ease) both; }
+.app-main > .card { animation-delay: 0.06s; }
+.app-main > .table-card { animation-delay: 0.1s; }
+
+/* --- Stat cards: deeper shadow + sheen ----------------------------------- */
+.stat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 90% at 100% 0%, color-mix(in oklab, var(--accent) 20%, transparent), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.45s var(--ease);
+  pointer-events: none;
+}
+.stat-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 26px 52px -26px color-mix(in oklab, var(--accent) 75%, transparent), var(--shadow-pop);
+}
+.stat-card:hover::before { opacity: 1; }
+.stat-card.is-money:hover { box-shadow: 0 26px 52px -26px color-mix(in oklab, var(--money) 75%, transparent), var(--shadow-pop); }
+.stat-grid .stat-card:nth-child(1) { animation-delay: 0.04s; }
+.stat-grid .stat-card:nth-child(2) { animation-delay: 0.1s; }
+.stat-grid .stat-card:nth-child(3) { animation-delay: 0.16s; }
+.stat-grid .stat-card:nth-child(4) { animation-delay: 0.22s; }
+
+/* --- Cards, tables, admin surfaces --------------------------------------- */
+.card, .table-card {
+  transition: transform 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+.app-main .card:hover,
+.app-main .table-card:hover {
+  border-color: color-mix(in oklab, var(--accent) 32%, transparent);
+  box-shadow: 0 22px 46px -28px color-mix(in oklab, var(--accent) 70%, transparent), var(--shadow-card);
+}
+.data-table tbody tr { transition: background-color 0.25s var(--ease), box-shadow 0.25s var(--ease), transform 0.25s var(--ease); }
+.data-table tbody tr:hover {
+  background: color-mix(in oklab, var(--accent) 8%, transparent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+.admin-course-card, .flag-card {
+  transition: transform 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+.admin-course-card:hover, .flag-card:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in oklab, var(--accent) 45%, transparent);
+  box-shadow: 0 24px 48px -26px color-mix(in oklab, var(--accent) 70%, transparent), var(--shadow-pop);
+}
+
+/* --- Admin overview quick links ------------------------------------------ */
+.admin-link-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+@media (max-width: 900px) { .admin-link-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .admin-link-grid { grid-template-columns: minmax(0, 1fr); } }
+.admin-link-card {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 6px;
+  padding: 20px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  color: var(--text);
+  animation: fade-up 0.5s var(--ease) both;
+  transition: transform 0.4s var(--ease), border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+.admin-link-card:nth-child(2) { animation-delay: 0.06s; }
+.admin-link-card:nth-child(3) { animation-delay: 0.12s; }
+.admin-link-card:nth-child(4) { animation-delay: 0.18s; }
+.admin-link-card:nth-child(5) { animation-delay: 0.24s; }
+.admin-link-card:nth-child(6) { animation-delay: 0.3s; }
+.admin-link-card .ico {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+  transition: transform 0.4s var(--ease), background-color 0.4s var(--ease), color 0.4s var(--ease);
+}
+.admin-link-card strong { font-family: var(--font-display); font-size: 1rem; }
+.admin-link-card p { margin: 0; font-size: 0.86rem; color: var(--text-muted); }
+.admin-link-card .go { font-size: 0.82rem; font-weight: 700; color: var(--accent); transition: transform 0.4s var(--ease); }
+.admin-link-card::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s var(--ease);
+}
+.admin-link-card:hover {
+  transform: translateY(-6px);
+  border-color: color-mix(in oklab, var(--accent) 50%, transparent);
+  box-shadow: 0 26px 52px -26px color-mix(in oklab, var(--accent) 70%, transparent), var(--shadow-pop);
+}
+.admin-link-card:hover .ico { transform: translateY(-2px) scale(1.08); background: var(--accent); color: #fff; }
+.admin-link-card:hover .go { transform: translateX(4px); }
+.admin-link-card:hover::after { transform: scaleX(1); }
+
+/* --- Buttons in the console --------------------------------------------- */
+.app-main .btn { transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), background-color 0.25s var(--ease), border-color 0.25s var(--ease); }
+.app-main .btn:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -16px color-mix(in oklab, var(--accent) 85%, transparent); }
+.app-main .btn:active { transform: translateY(0); }
+
+/* --- Profile header ------------------------------------------------------ */
+.profile-header {
+  align-items: center;
+  gap: 22px;
+  transition: border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+.profile-header:hover {
+  border-color: color-mix(in oklab, var(--accent) 35%, transparent);
+  box-shadow: 0 24px 48px -28px color-mix(in oklab, var(--accent) 65%, transparent), var(--shadow-card);
+}
+.profile-meta { gap: 2px; }
+.profile-meta .email { font-size: 0.9rem; color: var(--text-muted); }
+.photo-upload {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.photo-upload .btn { display: inline-flex; align-items: center; gap: 8px; }
+.photo-upload .btn svg { width: 18px; height: 18px; }
+.photo-upload .field-note { font-size: 0.76rem; color: var(--text-faint); }
+.photo-upload input[type="file"] { display: none !important; }
+@media (max-width: 620px) {
+  .photo-upload { margin-left: 0; align-items: flex-start; width: 100%; }
+}

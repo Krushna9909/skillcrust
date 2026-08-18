@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log in — SkillCrust</title>
+  <meta name="description" content="Log in to SkillCrust to track your referral earnings, wallet balance and courses.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <script src="/assets/js/theme.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#authMain">Skip to content</a>
+  <main class="auth-shell">
+    <aside class="auth-aside">
+      <a href="/" class="brand" data-logo>Skill<span>Crust</span></a>
+      <div>
+        <span class="eyebrow">Unlock Skills · Unlock Yourself</span>
+        <h2>Skills that actually <span class="grad-anim">pay off.</span></h2>
+        <p class="lede">Six practical skill stacks — editing, marketing, content, AI and business — taught self-paced, built for real outcomes.</p>
+        <ul class="auth-points">
+          <li>Lifetime access to every lesson you unlock</li>
+          <li>Learn on mobile or desktop, at your own pace</li>
+          <li>Beginner-friendly tiers you can grow through</li>
+        </ul>
+      </div>
+      <p class="faint" style="margin:0;font-size:0.82rem;">SkillCrust — practical, self-paced skill courses.</p>
+    </aside>
+    <div class="auth-main" id="authMain">
+      <div class="auth-card">
+        <div class="auth-topbar">
+          <a href="/" class="brand" data-logo style="font-size:1.05rem;">Skill<span>Crust</span></a>
+          <span data-theme-slot></span>
+        </div>
+
+        <h1>Welcome back</h1>
+        <p>Log in to continue learning and manage your courses.</p>
+
+        <div id="formMessage" class="form-message" role="alert"></div>
+
+        <form id="loginForm" novalidate>
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required autocomplete="email" placeholder="you@example.com">
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required autocomplete="current-password" data-reveal>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" id="submitBtn">Log in</button>
+        </form>
+
+        <p class="auth-switch">Don't have an account? <a href="/signup.html">Create one</a></p>
+      </div>
+    </div>
+  </main>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/login.js"></script>
+</body>
+</html>

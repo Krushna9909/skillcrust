@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KYC Details — SkillCrust</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/assets/js/theme.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <div id="appShellRoot"></div>
+
+    <main class="app-main">
+      <div class="page-head">
+        <h1 style="font-size:1.9rem;">KYC Details</h1>
+        <p>Required to withdraw. Submissions are auto-approved instantly, and your Aadhaar, PAN, and account number are encrypted and masked everywhere except right here when you enter them.</p>
+      </div>
+
+      <div class="secure-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.6-3 8.5-7 10-4-1.5-7-5.4-7-10V6z"/><path d="M9.5 12.2l1.8 1.8 3.4-3.6"/></svg>
+        <span>Sensitive values are hidden as you type and never displayed again after saving — only a masked version is stored on screen. Use the eye icon if you need to check what you entered.</span>
+      </div>
+
+      <h2 style="font-size:1.15rem; margin-bottom:14px;">Bank Account (for bank withdrawals)</h2>
+      <div id="typeAStatus"></div>
+      <div id="typeAMessage" class="form-message" role="alert"></div>
+      <div class="card" style="margin-bottom:40px;">
+        <form id="typeAForm" novalidate>
+          <div class="field-row">
+            <div class="field">
+              <label for="accountHolderName">Account holder name</label>
+              <input type="text" id="accountHolderName" required autocomplete="off" placeholder="As printed on your passbook">
+            </div>
+            <div class="field">
+              <label for="bankName">Bank name</label>
+              <input type="text" id="bankName" required autocomplete="off" placeholder="e.g. State Bank of India">
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="accountNumber">Account number</label>
+              <input type="password" id="accountNumber" required inputmode="numeric" autocomplete="off" data-reveal data-secure placeholder="XXXX XXXX XXXX" maxlength="24">
+              <span class="field-note">9–18 digits. Hidden while you type.</span>
+            </div>
+            <div class="field">
+              <label for="ifscCode">IFSC code</label>
+              <input type="text" id="ifscCode" required autocomplete="off" style="text-transform:uppercase;" placeholder="ABCD0123456" maxlength="11">
+              <span class="field-note">Format: 4 letters, 0, then 6 characters.</span>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="aadhaarNumber">Aadhaar number</label>
+              <input type="password" id="aadhaarNumber" required inputmode="numeric" autocomplete="off" data-reveal data-secure placeholder="XXXX XXXX XXXX" maxlength="14">
+              <span class="field-note">12 digits, encrypted before it leaves this page.</span>
+            </div>
+            <div class="field">
+              <label for="panNumber">PAN number</label>
+              <input type="password" id="panNumber" required autocomplete="off" data-reveal data-secure style="text-transform:uppercase;" placeholder="XXXXX0000X" maxlength="10">
+              <span class="field-note">Format: 5 letters, 4 digits, 1 letter.</span>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="typeASubmitBtn">Save bank KYC</button>
+        </form>
+      </div>
+
+      <h2 style="font-size:1.15rem; margin-bottom:14px;">UPI (for UPI withdrawals)</h2>
+      <div id="typeBStatus"></div>
+      <div id="typeBMessage" class="form-message" role="alert"></div>
+      <div class="card">
+        <form id="typeBForm" novalidate>
+          <div class="field">
+            <label for="upiId">UPI ID</label>
+            <input type="text" id="upiId" required autocomplete="off" placeholder="yourname@bank">
+            <span class="field-note">Must look like <span class="mono">name@provider</span>.</span>
+          </div>
+          <button type="submit" class="btn btn-primary" id="typeBSubmitBtn">Save UPI KYC</button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/app-shell.js"></script>
+  <script src="/assets/js/kyc.js"></script>
+</body>
+</html>

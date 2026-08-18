@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Overview — SkillCrust</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/assets/js/theme.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <div id="appShellRoot"></div>
+
+    <main class="app-main">
+      <div class="page-head">
+        <h1 style="font-size:1.9rem;">Admin Overview</h1>
+        <p>Company-wide numbers and quick links.</p>
+      </div>
+
+      <div class="stat-grid" style="grid-template-columns:repeat(2,minmax(0,1fr)); margin-bottom:36px;">
+        <div class="stat-card is-money">
+          <div class="stat-label">Unwithdrawn wallet liability</div>
+          <div class="stat-value" id="statLiability">₹—</div>
+          <div class="stat-sub">Total balance held across all user wallets</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total users</div>
+          <div class="stat-value" id="statUserCount">—</div>
+          <div class="stat-sub">Every registered account, active or not</div>
+        </div>
+      </div>
+
+      <h2 style="font-size:1.1rem; margin-bottom:14px;">Sections</h2>
+      <div class="admin-link-grid">
+        <a class="admin-link-card" href="/admin-users.html">
+          <span class="ico">👥</span>
+          <strong>Users</strong>
+          <p>See every account, add one manually, or deactivate / reactivate without deleting data.</p>
+          <span class="go">Manage users →</span>
+        </a>
+        <a class="admin-link-card" href="/admin-courses.html">
+          <span class="ico">🎓</span>
+          <strong>Courses</strong>
+          <p>Edit pricing and descriptions, add courses, and manage each course's lectures.</p>
+          <span class="go">Manage courses →</span>
+        </a>
+        <a class="admin-link-card" href="/admin-kyc.html">
+          <span class="ico">🪪</span>
+          <strong>KYC Submissions</strong>
+          <p>Bank and UPI details, hidden by default — reveal a row only when you need it.</p>
+          <span class="go">Review KYC →</span>
+        </a>
+        <a class="admin-link-card" href="/admin-withdrawals.html">
+          <span class="ico">💸</span>
+          <strong>Withdrawals</strong>
+          <p>Every withdrawal request, filterable by status.</p>
+          <span class="go">View withdrawals →</span>
+        </a>
+        <a class="admin-link-card" href="/admin-referral-trees.html">
+          <span class="ico">🌐</span>
+          <strong>Referral Trees</strong>
+          <p>Search any name or refer code to see who referred them.</p>
+          <span class="go">Explore trees →</span>
+        </a>
+        <a class="admin-link-card" href="/admin-fraud-flags.html">
+          <span class="ico">🚨</span>
+          <strong>Fraud Flags</strong>
+          <p>Same-IP signup alerts and other automated risk signals.</p>
+          <span class="go">Check flags →</span>
+        </a>
+      </div>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/admin-shell.js"></script>
+  <script src="/assets/js/admin-dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Affiliate Links — SkillCrust</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/assets/js/theme.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <div id="appShellRoot"></div>
+
+    <main class="app-main">
+      <div class="page-head">
+        <h1 style="font-size:1.9rem;">Affiliate Links</h1>
+        <p>Every course you own gets its own link. Opening it pre-fills your refer code and that course — anyone who signs up through it earns you a payout.</p>
+      </div>
+
+      <section class="card tree-card">
+        <h2 style="font-size:1.05rem;margin:0 0 4px;">How your chain pays</h2>
+        <p class="muted" style="margin:0 0 18px;font-size:.9rem;">You earn on direct signups and on the people they bring in.</p>
+        <div class="tree" id="networkDiagram"></div>
+      </section>
+
+      <div class="link-grid" id="linksContainer">
+        <p class="empty-state">Loading&hellip;</p>
+      </div>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/app-shell.js"></script>
+  <script src="/assets/js/affiliate-links.js"></script>
+</body>
+</html>

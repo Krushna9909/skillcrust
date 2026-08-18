@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Courses — SkillCrust Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/assets/js/theme.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <div id="appShellRoot"></div>
+
+    <main class="app-main">
+      <div class="page-head" style="display:flex; align-items:flex-start; justify-content:space-between; gap:20px; flex-wrap:wrap;">
+        <div>
+          <h1 style="font-size:1.9rem;">Courses</h1>
+          <p>Create/edit courses and manage each one's lectures. Click a course to expand it.</p>
+        </div>
+        <button class="btn btn-primary" type="button" id="toggleAddFormBtn">+ New course</button>
+      </div>
+
+      <div id="addCourseCard" class="card" style="display:none; margin-bottom:28px;">
+        <h2 style="font-size:1.05rem; margin-bottom:16px;">New course</h2>
+        <div id="addCourseMessage" class="form-message" role="alert"></div>
+        <form id="addCourseForm" novalidate>
+          <div class="field">
+            <label for="newName">Name</label>
+            <input type="text" id="newName" required>
+          </div>
+          <div class="field">
+            <label for="newDescription">Description</label>
+            <input type="text" id="newDescription" required>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="newPrice">Price (₹)</label>
+              <input type="number" id="newPrice" min="0" step="1" required>
+            </div>
+            <div class="field">
+              <label for="newDirectBonus">Direct bonus (₹)</label>
+              <input type="number" id="newDirectBonus" min="0" step="1" required>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="newIndirectBonus">Indirect bonus (₹)</label>
+              <input type="number" id="newIndirectBonus" min="0" step="1" required>
+            </div>
+            <div class="field">
+              <label for="newCompanyCut">Company cut (₹)</label>
+              <input type="number" id="newCompanyCut" min="0" step="1" required>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button type="submit" class="btn btn-primary" id="addCourseSubmitBtn">Create course</button>
+            <button type="button" class="btn btn-ghost" id="cancelAddCourseBtn">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="coursesContainer">
+        <p class="empty-state">Loading&hellip;</p>
+      </div>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/admin-shell.js"></script>
+  <script src="/assets/js/admin-courses.js"></script>
+</body>
+</html>
