@@ -16,3 +16,4 @@ uploads/profile-photos/*
 !.env.example
 uploads/
 *.log
+.env.example

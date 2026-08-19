@@ -60,7 +60,16 @@ async function loadLinks() {
     return;
   }
 
-  const links = result.data.affiliateLinks;
+  const links = (result.data.affiliateLinks || []).map((link) => {
+    // Always serve the link from the domain the user is actually on, so
+    // localhost/staging origins from the API never leak into shared links.
+    try {
+      const parsed = new URL(link.url, window.location.origin);
+      return { ...link, url: window.location.origin + parsed.pathname + parsed.search + parsed.hash };
+    } catch (err) {
+      return link;
+    }
+  });
   if (!links || links.length === 0) {
     container.innerHTML = '<p class="empty-state">You don\u2019t own any courses yet, so there\u2019s nothing to share. <a href="/upgrade.html">Browse courses</a>.</p>';
     return;

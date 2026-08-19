@@ -26,7 +26,7 @@
   const countEl = document.getElementById('heroCourseCount');
   if (countEl) window.countUp(countEl, result.data.courses.length, (n) => String(Math.round(n)));
 
-  const courses = result.data.courses.slice(0, 3);
+  const courses = result.data.courses;
   if (courses.length === 0) {
     grid.innerHTML = '<p class="empty-state">No courses are available right now.</p>';
     return;
@@ -34,6 +34,13 @@
 
   grid.innerHTML = courses.map(window.courseCardHtml).join('');
   if (window.initReveal) window.initReveal();
+
+  // Safety net: if the reveal observer never fires (odd scroll containers,
+  // restored scroll position, blocked inline styles), show the cards anyway.
+  setTimeout(() => {
+    grid.querySelectorAll('.course-card:not(.is-visible)')
+      .forEach((el) => el.classList.add('is-visible'));
+  }, 1500);
 })();
 
 /** Shared by courses-preview.js and courses.js so both grids stay identical. */
