@@ -1,17 +1,19 @@
 /**
  * public/assets/js/theme.js
  *
- * SkillCrust ships dark-only (per the SkillCrust design brief), so this
- * file no longer switches palettes — it just pins <html data-theme="dark">
- * before paint. `window.themeToggleMarkup()` is kept (returning an empty
- * string) because the app shell and admin shell call it; keeping the
- * function avoids touching that shared code path.
+ * SkillCrust is dark-mode only. This file simply locks <html data-theme="dark">
+ * before paint. No toggle button is rendered anywhere.
  */
-
 (function () {
   document.documentElement.setAttribute('data-theme', 'dark');
+  try { localStorage.removeItem('skillcrust-theme'); } catch (e) {}
 
-  window.themeToggleMarkup = function () {
-    return '';
-  };
+  // Kept as no-ops so older shells that call them keep working.
+  window.themeToggleMarkup = function () { return ''; };
+  window.setTheme = function () {};
+
+  document.addEventListener('DOMContentLoaded', function () {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.querySelectorAll('.theme-toggle').forEach(function (btn) { btn.remove(); });
+  });
 })();

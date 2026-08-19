@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Privacy Policy — SkillCrust</title>
+  <meta name="description" content="How SkillCrust collects, uses, stores and protects your personal information across our courses and platform.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -11,62 +12,196 @@
   <script src="/assets/js/theme.js"></script>
 </head>
 <body>
+  <div class="mesh-bg" aria-hidden="true"><span class="blob blob-1"></span><span class="blob blob-2"></span></div>
+  <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header">
     <div class="container nav">
       <a href="/" class="brand" data-logo>Skill<span>Crust</span></a>
-      <nav>
+      <nav aria-label="Primary">
         <ul class="nav-links" id="navLinks">
+          <li><a href="/index.html#home">Home</a></li>
           <li><a href="/courses.html">Courses</a></li>
           <li><a href="/index.html#how-it-works">How it works</a></li>
           <li><a href="/login.html">Log in</a></li>
         </ul>
       </nav>
       <div class="nav-actions">
-        <a href="/signup.html" class="btn btn-primary">Get started</a>
-        <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+        <a href="/signup.html" class="btn btn-primary">Get Started</a>
+        <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">☰</button>
       </div>
     </div>
   </header>
 
-  <main>
-    <section>
-      <div class="container legal-content">
+  <main id="main">
+    <section class="legal-hero">
+      <div class="container">
+        <span class="eyebrow">Legal</span>
         <h1>Privacy Policy</h1>
-        <p class="legal-notice">
-          <strong>Placeholder — not final.</strong> This is reasonable draft text standing in
-          for a real policy. It has not been reviewed by a lawyer and must be replaced with
-          counsel-approved language before SkillCrust accepts real signups or real payments.
-        </p>
+        <p class="lede">How we collect, use, store and protect your information when you learn with SkillCrust.</p>
+        <div class="legal-meta"><span>Last updated: 19 August 2026</span><span>Applies to skillcrust.com</span><span>Questions? support@skillcrust.com</span></div>
+      </div>
+    </section>
 
-        <p>Last updated: draft, not yet published.</p>
-
-        <h2>1. Information we collect</h2>
-        <p>When you create an account, we collect your full name, email address, phone number, state, and password. If you complete KYC for withdrawals, we additionally collect your Aadhaar number, PAN number, bank account details, and/or UPI ID.</p>
-
-        <h2>2. How we use your information</h2>
-        <p>We use your information to operate your account, process course purchases, calculate and credit referral rewards, process withdrawals, and communicate with you about your account.</p>
-
-        <h2>3. Data security</h2>
-        <p>Your Aadhaar number, PAN number, and bank account number are encrypted at rest and are never written to logs. These fields are masked everywhere in the product except at the moment you enter them and in the admin view used for verification. All traffic to SkillCrust is encrypted in transit.</p>
-
-        <h2>4. Cookies</h2>
-        <p>We use a single essential cookie to keep you logged in. We do not use tracking or advertising cookies.</p>
-
-        <h2>5. Third-party services</h2>
-        <p>Course payments and withdrawal payouts are currently processed through a mock/sandbox payment system during development. Once SkillCrust moves to real payments, this section will name the actual payment and payout providers used.</p>
-
-        <h2>6. Your rights</h2>
-        <p>You can review and update your name, email, phone number, state, and profile photo at any time from your account. To request a copy of your data or ask us to delete your account, contact us using the details below.</p>
-
-        <h2>7. Data retention</h2>
-        <p>We retain account and transaction records for as long as your account is active and for a reasonable period afterward, as required for financial recordkeeping.</p>
-
-        <h2>8. Contact</h2>
-        <p>Questions about this policy can be sent to the contact details SkillCrust will publish here once finalized.</p>
-
-        <h2>9. Changes to this policy</h2>
-        <p>We may update this policy from time to time. Material changes will be reflected on this page with an updated date.</p>
+    <section style="padding-top:8px;">
+      <div class="container legal-layout">
+        <aside class="legal-toc">
+          <h2>On this page</h2>
+          <ol>
+            <li><a href="#s1">Consent</a></li>
+            <li><a href="#s2">Information We Collect</a></li>
+            <li><a href="#s3">How We Use Your Information</a></li>
+            <li><a href="#s4">Log Files</a></li>
+            <li><a href="#s5">Cookies and Similar Technologies</a></li>
+            <li><a href="#s6">Third-Party Services</a></li>
+            <li><a href="#s7">Advertising Partners</a></li>
+            <li><a href="#s8">Data Security</a></li>
+            <li><a href="#s9">Data Retention</a></li>
+            <li><a href="#s10">Your Rights</a></li>
+            <li><a href="#s11">Children's Privacy</a></li>
+            <li><a href="#s12">Changes to this Privacy Policy</a></li>
+            <li><a href="#s13">Contact Us</a></li>
+          </ol>
+        </aside>
+        <article class="legal-doc">
+          <div class="legal-callout"><strong>Please read this Privacy Policy carefully.</strong> By accessing or using our website or Services, you acknowledge that you have read, understood, and agree to the practices described in this Privacy Policy.</div>
+          <p>This Privacy Policy applies solely to information collected through our online platform and does not apply to information collected offline or through any other channels unless specifically stated.</p>
+          <h2 id="s1">1. Consent</h2>
+          <p>By accessing, browsing, registering, purchasing, or using our Services, you consent to the collection, processing, storage, and use of your information in accordance with this Privacy Policy.</p>
+          <h2 id="s2">2. Information We Collect</h2>
+          <p>Depending on how you interact with our platform, we may collect the following categories of information:</p>
+          <h3>Personal Information</h3>
+          <ul>
+            <li>Full Name</li>
+            <li>Email Address</li>
+            <li>Mobile Number</li>
+            <li>Company Name (where applicable)</li>
+            <li>Billing Address</li>
+            <li>Communication Preferences</li>
+          </ul>
+          <h3>Account Information</h3>
+          <p>When you create an account or enroll in our courses, we may collect information necessary to manage your account and provide access to purchased services.</p>
+          <h3>Communication Information</h3>
+          <p>If you contact us through email, forms, chat, or support channels, we may collect:</p>
+          <ul>
+            <li>Messages</li>
+            <li>Attachments</li>
+            <li>Feedback</li>
+            <li>Customer support records</li>
+            <li>Other information voluntarily shared by you</li>
+          </ul>
+          <h3>Technical Information</h3>
+          <p>We may automatically collect:</p>
+          <ul>
+            <li>IP Address</li>
+            <li>Browser Type</li>
+            <li>Device Information</li>
+            <li>Operating System</li>
+            <li>Internet Service Provider (ISP)</li>
+            <li>Date &amp; Time of Visit</li>
+            <li>Referral URLs</li>
+            <li>Pages Visited</li>
+            <li>Website Activity</li>
+            <li>Session Duration</li>
+            <li>Clickstream Data</li>
+          </ul>
+          <h2 id="s3">3. How We Use Your Information</h2>
+          <p>We may process your information for purposes including:</p>
+          <ul>
+            <li>Providing and maintaining our Services</li>
+            <li>Processing course enrollments and purchases</li>
+            <li>Delivering digital products and educational content</li>
+            <li>Managing user accounts</li>
+            <li>Providing customer support</li>
+            <li>Responding to inquiries and requests</li>
+            <li>Improving website functionality and user experience</li>
+            <li>Conducting analytics and performance monitoring</li>
+            <li>Developing new products, features, and educational services</li>
+            <li>Preventing fraud, abuse, unauthorized access, and security threats</li>
+            <li>Sending service-related communications, important notices, and updates</li>
+            <li>Sending promotional communications where permitted by applicable law</li>
+          </ul>
+          <h2 id="s4">4. Log Files</h2>
+          <p>Like most websites, SkillCrust maintains standard server log files.</p>
+          <p>These logs may include:</p>
+          <ul>
+            <li>Internet Protocol (IP) Address</li>
+            <li>Browser Type</li>
+            <li>Internet Service Provider (ISP)</li>
+            <li>Date and Time Stamp</li>
+            <li>Entry and Exit Pages</li>
+            <li>Number of Clicks</li>
+            <li>Device Information</li>
+            <li>Diagnostic Information</li>
+          </ul>
+          <p>This information is collected for website administration, analytics, security monitoring, performance optimization, and improving user experience. Such information is generally not used to directly identify individual users.</p>
+          <h2 id="s5">5. Cookies and Similar Technologies</h2>
+          <p>Our website uses cookies and similar technologies to:</p>
+          <ul>
+            <li>Remember user preferences</li>
+            <li>Improve website functionality</li>
+            <li>Analyze website traffic</li>
+            <li>Enhance security</li>
+            <li>Personalize user experience</li>
+          </ul>
+          <p>You may disable cookies through your browser settings; however, certain features of the website may not function properly.</p>
+          <h2 id="s6">6. Third-Party Services</h2>
+          <p>Our platform may integrate with trusted third-party service providers for services such as:</p>
+          <ul>
+            <li>Payment Processing</li>
+            <li>Analytics</li>
+            <li>Customer Support</li>
+            <li>Email Delivery</li>
+            <li>Cloud Hosting</li>
+            <li>Marketing Tools</li>
+          </ul>
+          <p>These third-party providers process information in accordance with their own privacy policies. SkillCrust does not control the privacy practices of external websites or third-party services.</p>
+          <h2 id="s7">7. Advertising Partners</h2>
+          <p>Where applicable, advertising partners may use cookies, JavaScript, web beacons, or similar technologies to measure campaign performance and personalize advertisements.</p>
+          <p>These technologies are governed by the respective privacy policies of those third-party providers, and SkillCrust does not control or access such technologies.</p>
+          <h2 id="s8">8. Data Security</h2>
+          <p>We implement reasonable administrative, technical, and organizational safeguards designed to protect your personal information against unauthorized access, disclosure, alteration, misuse, or destruction.</p>
+          <p>While we strive to protect your information using commercially reasonable security measures, no electronic transmission or storage system can be guaranteed to be completely secure.</p>
+          <h2 id="s9">9. Data Retention</h2>
+          <p>Personal information is retained only for as long as necessary to:</p>
+          <ul>
+            <li>Provide our Services</li>
+            <li>Fulfill contractual obligations</li>
+            <li>Comply with applicable legal requirements</li>
+            <li>Resolve disputes</li>
+            <li>Enforce our policies</li>
+            <li>Maintain business records</li>
+          </ul>
+          <p>When information is no longer required, it will be securely deleted or anonymized where reasonably practicable.</p>
+          <h2 id="s10">10. Your Rights</h2>
+          <p>Subject to applicable law, you may have the right to:</p>
+          <ul>
+            <li>Access your personal information</li>
+            <li>Update or correct inaccurate information</li>
+            <li>Request deletion of your personal information</li>
+            <li>Withdraw consent where processing is based on consent</li>
+            <li>Object to certain processing activities</li>
+            <li>Request information regarding how your personal data is processed</li>
+          </ul>
+          <p>Requests may be submitted through our official support channels.</p>
+          <h2 id="s11">11. Children's Privacy</h2>
+          <p>Our Services are not intended for children below the age permitted under applicable law without appropriate parental or legal guardian involvement.</p>
+          <p>We do not knowingly collect personal information from children without appropriate legal authorization.</p>
+          <h2 id="s12">12. Changes to this Privacy Policy</h2>
+          <p>We may revise this Privacy Policy periodically to reflect changes in legal requirements, business practices, technology, or our Services.</p>
+          <p>The updated version will become effective immediately upon publication on this website. Continued use of our Services after such updates constitutes acceptance of the revised Privacy Policy.</p>
+          <h2 id="s13">13. Contact Us</h2>
+          <p>If you have any questions regarding this Privacy Policy or our privacy practices, please contact us through our official support channels.</p>
+          <p><strong>Email:</strong> <a href="mailto:support@skillcrust.com">support@skillcrust.com</a></p>
+          <p>By continuing to access or use the SkillCrust platform, you acknowledge that you have read, understood, and agreed to this Privacy Policy.</p>
+          <div class="legal-contact">
+            <div>
+              <div class="h">Still have a question?</div>
+              <p style="margin:4px 0 0;">Our support team replies to every policy enquiry.</p>
+            </div>
+            <a class="btn btn-primary" href="mailto:support@skillcrust.com">Email support@skillcrust.com</a>
+          </div>
+        </article>
       </div>
     </section>
   </main>
@@ -75,15 +210,15 @@
     <div class="container footer-grid">
       <div>
         <div class="brand" data-logo style="font-size:1.05rem;">Skill<span>Crust</span></div>
-        <p style="margin-top:8px; max-width: 32ch;">Skill-building courses with a transparent referral program.</p>
+        <p style="margin-top:8px; max-width: 32ch;">Practical, self-paced skill courses built for real outcomes.</p>
       </div>
       <div class="footer-links">
         <a href="/courses.html">Courses</a>
         <a href="/login.html">Log in</a>
         <a href="/signup.html">Sign up</a>
-        <a href="/privacy.html">Privacy</a>
-        <a href="/terms.html">Terms</a>
-        <a href="/refund.html">Refunds</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms &amp; Conditions</a>
+        <a href="/refund.html">Refund Policy</a>
       </div>
     </div>
     <div class="container" style="margin-top:24px;">

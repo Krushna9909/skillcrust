@@ -26,8 +26,20 @@
 const { Pool } = require('pg');
 const config = require('./env');
 
+// Managed Postgres providers (Render, Neon, Supabase, Railway...) require TLS,
+// while a local Postgres normally has no certificate at all. Detect the local
+// case and only disable SSL there — everything else connects over SSL with
+// `rejectUnauthorized: false`, which is what those providers' self-signed
+// certificate chains need.
+const connectionString = config.db.connectionString || '';
+const isLocalDb = /@(localhost|127\.0\.0\.1)[:/]/.test(connectionString);
+const useSsl = process.env.DATABASE_SSL
+  ? process.env.DATABASE_SSL === 'true'
+  : !isLocalDb;
+
 const pool = new Pool({
-  connectionString: config.db.connectionString,
+  connectionString,
+  ...(useSsl ? { ssl: { rejectUnauthorized: false } } : {}),
 });
 
 pool.on('error', (err) => {

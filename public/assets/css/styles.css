@@ -1985,3 +1985,276 @@ body { animation: page-in .7s var(--ease) both; }
 body.is-splashing { animation: none; }
 body.splash-done { animation: page-in .9s var(--ease) both; }
 @keyframes page-in { from { opacity: 0; transform: translateY(8px); } }
+
+/* ========================================================================
+   LIGHT THEME TOKENS
+   Every component references tokens only, so overriding them here themes
+   the whole product. theme.js sets [data-theme] before paint.
+   ======================================================================== */
+[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #F7F7FB;
+  --bg-elevated: #FFFFFF;
+  --surface: #FFFFFF;
+  --surface-raised: #FFFFFF;
+  --surface-sunken: #F1F1F7;
+  --border: rgba(16, 18, 32, 0.10);
+  --border-soft: rgba(16, 18, 32, 0.06);
+  --border-strong: rgba(16, 18, 32, 0.18);
+
+  --text: #14162B;
+  --text-muted: #4B5162;
+  --text-faint: #7A8090;
+
+  --accent: #6D28D9;
+  --accent-2: #9333EA;
+  --accent-hover: #5B21B6;
+  --accent-soft: rgba(109, 40, 217, 0.10);
+  --accent-ink: #ffffff;
+
+  --cyan: #0891B2;
+  --cyan-soft: rgba(8, 145, 178, 0.12);
+
+  --money: #4D7C0F;
+  --money-hover: #3F6212;
+  --money-soft: rgba(77, 124, 15, 0.12);
+
+  --warn: #B45309;
+  --warn-soft: rgba(180, 83, 9, 0.12);
+
+  --danger: #DC2626;
+  --danger-soft: rgba(220, 38, 38, 0.10);
+
+  --info: #0891B2;
+  --info-soft: rgba(8, 145, 178, 0.12);
+
+  --gradient-primary: linear-gradient(135deg, #6D28D9, #9333EA 55%, #0891B2);
+
+  --shadow-sm: 0 1px 2px rgba(20, 22, 43, 0.08);
+  --shadow-card: 0 22px 50px -34px rgba(20, 22, 43, 0.45);
+  --shadow-pop: 0 28px 64px -30px rgba(20, 22, 43, 0.35);
+  --shadow-accent: 0 18px 40px -20px rgba(109, 40, 217, 0.45);
+  --shadow-glow: 0 0 0 1px rgba(109, 40, 217, 0.16), 0 24px 56px -32px rgba(109, 40, 217, 0.35);
+}
+[data-theme='light'] body { background: var(--bg); }
+[data-theme='light'] .mesh-bg .blob { opacity: 0.35; }
+[data-theme='light'] .glass,
+[data-theme='light'] .hs-card,
+[data-theme='light'] .hv-card,
+[data-theme='light'] .hs-sat { background: rgba(255,255,255,0.86); color: var(--text); }
+[data-theme='light'] ::selection { background: var(--accent); color: #fff; }
+
+/* --- Theme toggle button (premium hover) -------------------------------- */
+.theme-toggle {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: transform .3s var(--ease), border-color .3s var(--ease), box-shadow .3s var(--ease);
+}
+.theme-toggle::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--gradient-primary);
+  opacity: 0;
+  transition: opacity .3s var(--ease);
+}
+.theme-toggle:hover {
+  transform: translateY(-2px) scale(1.05);
+  border-color: transparent;
+  box-shadow: var(--shadow-accent);
+}
+.theme-toggle:hover::after { opacity: .16; }
+.theme-toggle .theme-icon {
+  position: relative; z-index: 1;
+  transition: transform .45s var(--ease);
+}
+.theme-toggle:hover .theme-icon { transform: rotate(-18deg) scale(1.12); }
+.theme-toggle.is-spinning .theme-icon { animation: tt-flip .55s var(--ease); }
+@keyframes tt-flip {
+  from { transform: rotate(0) scale(.6); opacity: 0; }
+  to   { transform: rotate(360deg) scale(1); opacity: 1; }
+}
+
+/* --- Hero video stage (replaces the CSS motion hero) --------------------- */
+.hero-video {
+  position: relative;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-glow), var(--shadow-card);
+  aspect-ratio: 16 / 11;
+  background: var(--surface-sunken);
+  isolation: isolate;
+  transition: transform .5s var(--ease), box-shadow .5s var(--ease);
+}
+.hero-video:hover { transform: translateY(-6px); }
+.hero-video-el {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.02);
+  animation: hv-drift 22s ease-in-out infinite alternate;
+}
+@keyframes hv-drift { to { transform: scale(1.09); } }
+.hero-video .hv-glow {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(80% 60% at 50% 110%, rgba(124,58,237,0.42), transparent 70%),
+    linear-gradient(180deg, rgba(10,10,15,0.10), rgba(10,10,15,0.55));
+  mix-blend-mode: normal;
+}
+.hero-video .hv-scan {
+  position: absolute; left: 0; right: 0; height: 32%;
+  background: linear-gradient(180deg, transparent, rgba(34,211,238,0.14), transparent);
+  animation: hv-scan 6.5s var(--ease) infinite;
+  pointer-events: none;
+}
+@keyframes hv-scan { 0% { top: -35%; } 100% { top: 105%; } }
+.hv-badge {
+  position: absolute; top: 16px; left: 16px; z-index: 3;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 14px; border-radius: var(--radius-pill);
+  background: rgba(13,15,23,0.72); border: 1px solid var(--border-strong);
+  backdrop-filter: blur(10px);
+  font-size: 0.74rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+  color: #fff;
+}
+.hv-badge .dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--money);
+  animation: hs-ping 1.9s infinite;
+}
+.hv-card {
+  position: absolute; z-index: 3;
+  padding: 12px 16px; border-radius: 16px;
+  background: rgba(13,15,23,0.78); border: 1px solid var(--border-strong);
+  backdrop-filter: blur(12px); box-shadow: var(--shadow-card);
+  font-size: 0.76rem; color: #E9E9F2;
+  animation: floaty 7s ease-in-out infinite;
+}
+.hv-card b { display: block; font-family: var(--font-mono); font-size: 1.02rem; color: var(--money); }
+.hv-c1 { right: 16px; top: 18%; }
+.hv-c2 { left: 16px; bottom: 18px; animation-delay: -3.2s; }
+@media (max-width: 720px) {
+  .hero-video { aspect-ratio: 4 / 3; border-radius: 20px; }
+  .hv-card { font-size: 0.68rem; padding: 9px 12px; }
+  .hv-card b { font-size: 0.88rem; }
+  .hv-c1 { right: 10px; top: 14%; }
+  .hv-c2 { left: 10px; bottom: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-video-el, .hv-scan, .hv-card { animation: none !important; }
+}
+
+/* --- Legal pages (Privacy / Terms / Refund) ------------------------------ */
+.legal-hero {
+  position: relative;
+  padding: clamp(56px, 9vw, 96px) 0 28px;
+  text-align: center;
+}
+.legal-hero .eyebrow { justify-content: center; }
+.legal-hero h1 { margin-bottom: 10px; }
+.legal-hero p { max-width: 62ch; margin: 0 auto; }
+.legal-meta {
+  display: inline-flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+  margin-top: 18px;
+}
+.legal-meta span {
+  padding: 6px 14px; border-radius: var(--radius-pill);
+  border: 1px solid var(--border); background: var(--surface);
+  font-size: 0.78rem; color: var(--text-muted);
+}
+.legal-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+  padding-bottom: 80px;
+}
+@media (max-width: 900px) { .legal-layout { grid-template-columns: 1fr; gap: 20px; } }
+.legal-toc {
+  position: sticky; top: 92px;
+  padding: 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+@media (max-width: 900px) { .legal-toc { position: static; } }
+.legal-toc h2 {
+  font-size: 0.76rem; text-transform: uppercase; letter-spacing: .12em;
+  color: var(--text-faint); margin-bottom: 12px;
+}
+.legal-toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+.legal-toc li { counter-increment: toc; margin: 0; }
+.legal-toc a {
+  display: flex; gap: 10px; align-items: baseline;
+  padding: 7px 10px; border-radius: 10px;
+  font-size: 0.85rem; color: var(--text-muted); font-weight: 500;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.legal-toc a::before {
+  content: counter(toc, decimal-leading-zero);
+  font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-faint);
+}
+.legal-toc a:hover { background: var(--accent-soft); color: var(--text); transform: translateX(3px); }
+
+.legal-doc {
+  max-width: 78ch;
+  padding: clamp(24px, 4vw, 44px);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  font-size: 1.02rem;
+  line-height: 1.78;
+}
+.legal-doc > p { color: var(--text-muted); }
+.legal-doc h2 {
+  font-size: clamp(1.2rem, 2.2vw, 1.45rem);
+  margin: 40px 0 12px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border-soft);
+  scroll-margin-top: 100px;
+}
+.legal-doc > h2:first-of-type { border-top: 0; padding-top: 0; margin-top: 26px; }
+.legal-doc h3 {
+  font-size: 1.02rem; margin: 24px 0 8px; color: var(--text);
+  letter-spacing: -0.01em;
+}
+.legal-doc ul { padding-left: 0; list-style: none; margin: 0 0 16px; }
+.legal-doc ul li {
+  position: relative; padding-left: 22px; margin-bottom: 8px; color: var(--text-muted);
+}
+.legal-doc ul li::before {
+  content: ''; position: absolute; left: 4px; top: 0.72em;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+}
+.legal-doc strong { color: var(--text); }
+.legal-doc a { font-weight: 600; }
+.legal-callout {
+  margin: 0 0 24px;
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--text-muted);
+}
+.legal-callout strong { color: var(--text); }
+.legal-contact {
+  margin-top: 34px; padding: 22px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface-sunken);
+  display: flex; flex-wrap: wrap; gap: 12px 22px; align-items: center; justify-content: space-between;
+}
+.legal-contact .h { font-family: var(--font-display); font-size: 1.05rem; color: var(--text); }
+
+[data-theme="light"] .mesh-bg .blob { opacity: 0.18; }
+[data-theme="light"] .site-header { background: color-mix(in oklab, #ffffff 82%, transparent); }
+
+/* Dark mode only — theme toggle removed */
+.theme-toggle { display: none !important; }
