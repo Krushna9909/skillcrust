@@ -853,3 +853,59 @@ body.is-admin[data-theme='light'] { --accent: #6244e0; --accent-hover: #4e33c4; 
 }
 .wallet-page .data-table tbody tr { transition: none !important; }
 .wallet-page .data-table tbody tr:hover { background: transparent; box-shadow: none; transform: none; }
+
+/* --- Wallet: cleaner module separation + alignment (desktop + mobile) ------------------- */
+.wallet-page .app-main { max-width: 1080px; }
+.wallet-module {
+  margin-bottom: 30px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+.wallet-module:first-of-type { border-top: 0; padding-top: 0; }
+.wallet-module-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 0 14px;
+}
+.wallet-page .withdraw-form-card { padding: clamp(18px, 2.4vw, 26px); }
+.wallet-page #withdrawForm {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 18px;
+  align-items: start;
+}
+.wallet-page #withdrawForm > .field { margin: 0; min-width: 0; }
+.wallet-page #withdrawForm #bankFields,
+.wallet-page #withdrawForm #upiFields {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 18px;
+}
+.wallet-page #withdrawForm #bankFields > .field,
+.wallet-page #withdrawForm #upiFields > .field { margin: 0; min-width: 0; }
+.wallet-page #withdrawForm #upiFields { grid-template-columns: 1fr; }
+.wallet-page #withdrawForm input { width: 100%; }
+.wallet-page #withdrawForm #withdrawSubmitBtn {
+  grid-column: 1 / -1;
+  justify-self: start;
+  min-width: 240px;
+}
+.wallet-page #withdrawForm > p { grid-column: 1 / -1; margin: 0; }
+.wallet-page .method-toggle { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.wallet-page .table-card { padding: 0; overflow: hidden; }
+.wallet-page #withdrawalsTableWrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.wallet-page .data-table { width: 100%; min-width: 620px; }
+.wallet-page .data-table th,
+.wallet-page .data-table td { white-space: nowrap; vertical-align: middle; }
+.wallet-page .data-table th:last-child,
+.wallet-page .data-table td:last-child { text-align: right; }
+
+@media (max-width: 720px) {
+  .wallet-page #withdrawForm,
+  .wallet-page #withdrawForm #bankFields { grid-template-columns: 1fr; }
+  .wallet-page #withdrawForm #withdrawSubmitBtn { width: 100%; min-width: 0; justify-self: stretch; }
+  .wallet-module { padding-top: 18px; margin-bottom: 24px; }
+  .wallet-page .method-toggle button { flex: 1 1 46%; }
+}

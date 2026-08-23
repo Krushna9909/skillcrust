@@ -1,7 +1,7 @@
 /**
  * public/assets/js/course-copy.js
  *
- * Static, marketing-only copy for the six SkillCrust courses. Purely
+ * Static, marketing-only copy for the six SuccessRich courses. Purely
  * presentational — it never replaces API data (name/price/id always come
  * from GET /api/v1/courses). Matched by normalised course name so the
  * backend catalogue stays the single source of truth.
@@ -19,7 +19,7 @@ window.COURSE_COPY = {
       ['Public Speaking', 'Overcoming stage fear, structuring a talk, tone and body language basics.'],
       ['Communication Skills', 'Clear messaging, active listening, speaking confidently in professional settings.'],
       ['Personality Development', 'First impressions, self-presentation, personal branding basics.'],
-      ['Business Opportunity Essentials', 'Thinking like an entrepreneur, spotting opportunity, next steps into other SkillCrust tracks.'],
+      ['Business Opportunity Essentials', 'Thinking like an entrepreneur, spotting opportunity, next steps into other SuccessRich tracks.'],
     ],
     faqs: [
       ["Is this course useful if I'm not interested in affiliate marketing?", 'Yes — the communication and personality development modules stand on their own.'],

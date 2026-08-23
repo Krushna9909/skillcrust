@@ -88,7 +88,7 @@
     form.reset();
     form.style.display = 'none';
     showSuccess('Account created! Redirecting to your dashboard\u2026');
-    if (window.toast) window.toast('Account created \u2014 welcome to SkillCrust!', 'success');
+    if (window.toast) window.toast('Account created \u2014 welcome to SuccessRich!', 'success');
     window.setTimeout(() => { window.location.href = '/dashboard.html'; }, 900);
   });
 

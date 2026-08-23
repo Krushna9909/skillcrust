@@ -63,7 +63,7 @@ function renderAdminShellChrome() {
   root.insertAdjacentHTML('afterbegin', `
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
     <aside class="app-sidebar" id="appSidebar">
-      <a href="/admin-dashboard.html" class="brand">${window.logoMarkSvg()}<span class="brand-text">Skill<span>Crust</span> <span class="brand-sub">ADMIN</span></span></a>
+      <a href="/admin-dashboard.html" class="brand">${window.logoMarkSvg()}<span class="brand-text">Success<span>Rich</span> <span class="brand-sub">ADMIN</span></span></a>
       <ul class="app-nav">${navHtml}</ul>
       <div class="app-sidebar-footer">
         <div class="sidebar-user" id="sidebarUser">
@@ -74,7 +74,7 @@ function renderAdminShellChrome() {
     </aside>
     <div class="app-topbar">
       <button class="app-topbar-toggle" id="topbarToggle" aria-label="Open menu" aria-expanded="false">\u2630 Menu</button>
-      <span class="brand" style="font-size:1.05rem;">${window.logoMarkSvg()}Skill<span>Crust</span> Admin</span>
+      <span class="brand" style="font-size:1.05rem;">${window.logoMarkSvg()}Success<span>Rich</span> Admin</span>
       <div class="app-topbar-actions" data-theme-slot></div>
     </div>
   `);

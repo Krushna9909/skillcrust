@@ -28,7 +28,7 @@
   }
 
   const course = result.data.course;
-  document.title = `${course.name} — SkillCrust`;
+  document.title = `${course.name} — SuccessRich`;
   container.innerHTML = detailHtml(course);
   if (window.initReveal) window.initReveal();
 }());

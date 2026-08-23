@@ -1,12 +1,12 @@
 /**
  * public/assets/js/theme.js
  *
- * SkillCrust is dark-mode only. This file simply locks <html data-theme="dark">
+ * SuccessRich is dark-mode only. This file simply locks <html data-theme="dark">
  * before paint. No toggle button is rendered anywhere.
  */
 (function () {
   document.documentElement.setAttribute('data-theme', 'dark');
-  try { localStorage.removeItem('skillcrust-theme'); } catch (e) {}
+  try { localStorage.removeItem('successrich-theme'); } catch (e) {}
 
   // Kept as no-ops so older shells that call them keep working.
   window.themeToggleMarkup = function () { return ''; };

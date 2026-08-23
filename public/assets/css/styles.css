@@ -1,7 +1,7 @@
 /**
  * public/assets/css/styles.css
  *
- * Design system for SkillCrust — public/marketing pages AND the shared
+ * Design system for SuccessRich — public/marketing pages AND the shared
  * primitives (tokens, typography, buttons, cards, forms, tables, badges,
  * motion) that app.css builds on for the authenticated dashboard.
  *
@@ -1080,7 +1080,7 @@ input[aria-invalid='true'] { border-color: var(--danger); }
 }
 
 /* =========================================================================
-   SkillCrust — Gen-Z dark design layer
+   SuccessRich — Gen-Z dark design layer
    Glassmorphism panels, gradient mesh backdrops, scroll-reveal motion.
    ========================================================================= */
 
@@ -2495,3 +2495,29 @@ body.splash-done { animation: page-in .9s var(--ease) both; }
 }
 
 @keyframes fadeUpSoft { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+/* --- SuccessRich brand mark + live splash intro ---------------------------------------- */
+:root { --sr-gold: #E8C458; --sr-blue: #1E63B8; }
+.brand span { color: var(--sr-gold); }
+.brand .logo-mark { filter: drop-shadow(0 4px 12px rgba(30, 99, 184, 0.35)); }
+.brand:hover .logo-mark .lm-spark { animation: sr-spark-twinkle 1.1s var(--ease) infinite; }
+.brand:hover .logo-mark .lm-layer-2 { animation: sr-rise 1.1s var(--ease) infinite alternate; }
+@keyframes sr-spark-twinkle { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.25) rotate(18deg); } }
+@keyframes sr-rise { to { transform: translateY(-1.4px); } }
+.logo-mark .lm-spark, .logo-mark .lm-layer { transform-box: fill-box; transform-origin: center; }
+
+/* Splash: each logo piece builds in, then the wordmark locks */
+.logo-splash .logo-mark { width: 118px; height: 118px; }
+.logo-splash .lm-layer-1 { animation: sr-bag-in 1s var(--ease) .25s backwards; }
+.logo-splash .lm-layer-2 { animation: sr-chart-in 1.05s var(--ease) .8s backwards; }
+.logo-splash .lm-layer-3 { animation: sr-book-open 1.05s var(--ease) 1.35s backwards; }
+.logo-splash .lm-spark { animation: sr-star-in 1s var(--ease) 1.95s backwards, sr-spark-twinkle 1.6s var(--ease) 2.95s infinite; }
+.logo-splash .splash-word { animation: sr-word-in 1s var(--ease) 2.3s backwards; }
+.logo-splash .splash-tag { animation: sr-word-in .9s var(--ease) 2.9s backwards; letter-spacing: .28em; }
+.logo-splash .splash-bar i { background-image: linear-gradient(90deg, var(--sr-blue), var(--sr-gold)); animation: splash-bar 4.3s var(--ease) .2s forwards; }
+.logo-splash { animation: splash-out .7s var(--ease) 4.5s forwards; }
+@keyframes sr-bag-in { 0% { opacity: 0; transform: translateY(-10px) scale(.7); } 60% { transform: translateY(0) scale(1.06); } 100% { opacity: 1; transform: none; } }
+@keyframes sr-chart-in { 0% { opacity: 0; transform: translateY(12px) scaleY(.4); } 100% { opacity: 1; transform: none; } }
+@keyframes sr-book-open { 0% { opacity: 0; transform: rotateX(78deg) translateY(8px); } 100% { opacity: 1; transform: none; } }
+@keyframes sr-star-in { 0% { opacity: 0; transform: scale(0) rotate(-140deg); } 70% { transform: scale(1.3) rotate(12deg); } 100% { opacity: 1; transform: none; } }
+@keyframes sr-word-in { 0% { opacity: 0; transform: translateY(10px); letter-spacing: .5em; } 100% { opacity: 1; transform: none; } }

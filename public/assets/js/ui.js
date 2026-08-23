@@ -236,13 +236,32 @@ document.addEventListener('DOMContentLoaded', function () { window.attachRevealT
 window.logoMarkSvg = window.logoMarkSvg || function () {
   return (
     '<svg class="logo-mark" viewBox="0 0 48 48" fill="none" aria-hidden="true">' +
-    '<defs><linearGradient id="scLogoGrad" x1="0" y1="0" x2="1" y2="1">' +
-    '<stop offset="0%" stop-color="#7C3AED"/><stop offset="55%" stop-color="#A855F7"/><stop offset="100%" stop-color="#22D3EE"/>' +
-    '</linearGradient></defs>' +
-    '<g class="lm-layer lm-layer-1"><path d="M24 4 42 13 24 22 6 13z" fill="url(#scLogoGrad)"/></g>' +
-    '<g class="lm-layer lm-layer-2"><path d="M24 20 42 29 24 38 6 29z" fill="url(#scLogoGrad)" opacity="0.62"/></g>' +
-    '<g class="lm-layer lm-layer-3"><path d="M24 30 42 39 24 48 6 39z" fill="url(#scLogoGrad)" opacity="0.34"/></g>' +
-    '<circle class="lm-spark" cx="40" cy="9" r="3.4" fill="#22D3EE"/>' +
+    '<defs>' +
+    '<linearGradient id="srBlue" x1="0" y1="1" x2="1" y2="0">' +
+    '<stop offset="0%" stop-color="#0E3A73"/><stop offset="100%" stop-color="#1E63B8"/></linearGradient>' +
+    '<linearGradient id="srGold" x1="0" y1="1" x2="1" y2="0">' +
+    '<stop offset="0%" stop-color="#B98E1E"/><stop offset="100%" stop-color="#E8C458"/></linearGradient>' +
+    '</defs>' +
+    // money bag (back)
+    '<g class="lm-layer lm-layer-1">' +
+    '<path d="M27.5 15.5h7.2c3.4 2.6 5.3 6.2 5.3 9.9 0 4.1-3.2 6.6-8.9 6.6s-8.9-2.5-8.9-6.6c0-3.7 1.9-7.3 5.3-9.9z" fill="url(#srGold)"/>' +
+    '<path d="M27.2 12.2h7.8l-1.6 3.3h-4.6z" fill="url(#srGold)" opacity=".8"/>' +
+    '<path d="M31.1 19v9M33.6 21.2c0-1-1.1-1.7-2.5-1.7s-2.5.7-2.5 1.7 1.1 1.5 2.5 1.8 2.5.8 2.5 1.8-1.1 1.7-2.5 1.7-2.5-.7-2.5-1.7" stroke="#F7EFD6" stroke-width="1.5" stroke-linecap="round"/>' +
+    '</g>' +
+    // bar chart + rising arrow
+    '<g class="lm-layer lm-layer-2">' +
+    '<rect x="9" y="24" width="5" height="12" rx="1.4" fill="url(#srBlue)"/>' +
+    '<rect x="16.5" y="19" width="5" height="17" rx="1.4" fill="url(#srBlue)"/>' +
+    '<rect x="24" y="14.5" width="5" height="21.5" rx="1.4" fill="url(#srBlue)" opacity=".9"/>' +
+    '<path d="M8 21 17 12.5 23.5 18 34 7.5" stroke="url(#srGold)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<path d="M27.5 7h7v7" stroke="url(#srGold)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '</g>' +
+    // open book (front)
+    '<g class="lm-layer lm-layer-3">' +
+    '<path d="M24 36.5c-3.6-2.9-8.4-4.2-13.6-4.2L4 40.6c5.9 0 12.6 1.3 20 4.4z" fill="url(#srBlue)"/>' +
+    '<path d="M24 36.5c3.6-2.9 8.4-4.2 13.6-4.2L44 40.6c-5.9 0-12.6 1.3-20 4.4z" fill="url(#srGold)"/>' +
+    '</g>' +
+    '<path class="lm-spark" d="M40.5 4.2l1.3 2.9 3.2.3-2.4 2.1.7 3.1-2.8-1.6-2.8 1.6.7-3.1-2.4-2.1 3.2-.3z" fill="url(#srGold)"/>' +
     '</svg>'
   );
 };
