@@ -98,6 +98,22 @@ async function hasSuccessfulPurchase(client, buyerId, courseId) {
   return result.rows.length > 0;
 }
 
+/**
+ * Idempotency lookup for externally-driven purchases (CreatorFeed's
+ * checkout webhook): the provider's `txn_id` is stored verbatim in
+ * `payment_gateway_reference` by `markSuccess`, so a redelivered webhook
+ * for the same transaction can be detected and ignored instead of
+ * crediting the reward tiers twice.
+ */
+async function findByGatewayReference(client, reference) {
+  const result = await client.query(
+    `SELECT id, buyer_id, course_id, amount, status, payment_gateway_reference
+     FROM purchases WHERE payment_gateway_reference = $1 LIMIT 1`,
+    [reference]
+  );
+  return result.rows[0] || null;
+}
+
 module.exports = {
   createPendingPurchase,
   findPendingById,
@@ -105,4 +121,5 @@ module.exports = {
   markSuccess,
   markFailed,
   hasSuccessfulPurchase,
+  findByGatewayReference,
 };

@@ -1,7 +1,14 @@
 /**
  * src/controllers/wallet.controller.js
  *
- * Checkpoint 5: wallet balance, withdrawal request, withdrawal history.
+ * Wallet balance, withdrawal request, withdrawal history.
+ *
+ * The withdrawal request now collects the payout destination (bank or
+ * UPI) right here on the wallet page and STOPS at `pending`: funds are
+ * reserved, but nothing is sent to the payout provider until an admin
+ * approves it from the admin panel (see admin.controller.js's
+ * `approveWithdrawal` / `rejectWithdrawal`).
+ *
  * KYC gating and input validation live HERE (same layering as
  * purchase.controller.js validating course existence/ownership before
  * calling rewardEngine) — src/services/withdrawalEngine.js only knows
@@ -14,9 +21,13 @@ const userModel = require('../models/user.model');
 const withdrawalModel = require('../models/withdrawal.model');
 const kycModel = require('../models/kyc.model');
 const withdrawalEngine = require('../services/withdrawalEngine');
-const payoutGateway = require('../services/payout');
+const { encryptField } = require('../utils/encryption');
 
 const { serialize } = withdrawalEngine;
+
+function str(value) {
+  return typeof value === 'string' ? value.trim() : '';
+}
 
 async function getWalletBalance(req, res, next) {
   try {
@@ -25,6 +36,53 @@ async function getWalletBalance(req, res, next) {
   } catch (err) {
     return next(err);
   }
+}
+
+function buildPayoutDetails(method, body) {
+  const holderName = str(body.holderName || body.holder_name);
+  const holderEmail = str(body.holderEmail || body.holder_email);
+
+  if (!holderName) {
+    throw createHttpError(400, 'Account holder name is required.');
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(holderEmail)) {
+    throw createHttpError(400, 'A valid email address is required.');
+  }
+
+  if (method === 'bank') {
+    const accountNumber = str(body.accountNumber || body.account_number).replace(/\s+/g, '');
+    const ifscCode = str(body.ifscCode || body.ifsc_code).toUpperCase();
+
+    if (!/^\d{9,18}$/.test(accountNumber)) {
+      throw createHttpError(400, 'Please enter a valid bank account number.');
+    }
+    if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifscCode)) {
+      throw createHttpError(400, 'Please enter a valid IFSC code.');
+    }
+
+    return {
+      holderName,
+      holderEmail,
+      accountNumberEncrypted: encryptField(accountNumber),
+      accountNumberLast4: accountNumber.slice(-4),
+      ifscCode,
+      upiId: null,
+    };
+  }
+
+  const upiId = str(body.upiId || body.upi_id);
+  if (!/^[\w.\-]{2,}@[a-zA-Z]{2,}$/.test(upiId)) {
+    throw createHttpError(400, 'Please enter a valid UPI ID (for example name@bank).');
+  }
+
+  return {
+    holderName,
+    holderEmail,
+    accountNumberEncrypted: null,
+    accountNumberLast4: null,
+    ifscCode: null,
+    upiId,
+  };
 }
 
 async function requestWithdrawal(req, res, next) {
@@ -56,21 +114,19 @@ async function requestWithdrawal(req, res, next) {
       ));
     }
 
-    const simulate = payoutGateway.sanitizeSimulateOverride(body.simulate);
+    const payoutDetails = buildPayoutDetails(method, body);
 
     const withdrawal = await withdrawalEngine.createAndReserveWithdrawal({
       userId: req.user.id,
       amount,
       method,
+      payoutDetails,
     });
 
-    const outcome = await withdrawalEngine.processPendingWithdrawal(withdrawal.id, { simulate });
-
-    // 201 for a confirmed payout; 402 Payment Required for a declined one
-    // — same convention purchase.controller.js uses for the payment
-    // side. Body always carries the full status/failureReason regardless.
-    const statusCode = outcome.status === 'paid' ? 201 : 402;
-    return res.status(statusCode).json({ withdrawal: outcome });
+    // 202 Accepted — the request is queued for admin approval, no money
+    // has moved yet. The payout provider is only called once an admin
+    // approves it.
+    return res.status(202).json({ withdrawal: serialize(withdrawal) });
   } catch (err) {
     return next(err);
   }

@@ -63,6 +63,10 @@ router.put('/courses/:id/lectures/reorder', requireAdmin, adminController.reorde
 // --- Visibility endpoints (Checkpoint 8, except fraud-flags: Checkpoint 9) -
 router.get('/kyc-submissions', requireAdmin, adminController.getKycSubmissions);
 router.get('/withdrawals', requireAdmin, adminController.getAllWithdrawals);
+// Admin approval gate for user withdrawal requests — approving is what
+// hands the payout to CreatorFeed; rejecting refunds the wallet.
+router.post('/withdrawals/:id/approve', requireAdmin, adminController.approveWithdrawal);
+router.post('/withdrawals/:id/reject', requireAdmin, adminController.rejectWithdrawal);
 router.get('/referral-trees', requireAdmin, adminController.getReferralTree);
 router.get('/fraud-flags', requireAdmin, adminController.getFraudFlags);
 router.get('/liability-summary', requireAdmin, adminController.getLiabilitySummary);

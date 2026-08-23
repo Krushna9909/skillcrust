@@ -18,11 +18,12 @@
     <main class="app-main">
       <div class="page-head">
         <h1 style="font-size:1.9rem;">Withdrawals</h1>
-        <p>Every withdrawal across every user, newest first.</p>
+        <p>Approve or reject user withdrawal requests. Approving releases the payout to the provider; rejecting refunds the wallet.</p>
       </div>
 
       <div class="filter-bar">
         <button class="tab-btn is-active" data-status="all" type="button">All</button>
+        <button class="tab-btn" data-status="pending" type="button">Pending approval</button>
         <button class="tab-btn" data-status="paid" type="button">Paid</button>
         <button class="tab-btn" data-status="processing" type="button">Processing</button>
         <button class="tab-btn" data-status="failed" type="button">Failed</button>

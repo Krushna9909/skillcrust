@@ -56,6 +56,12 @@ app.use(helmet({
 app.use(cors({ credentials: true }));
 
 // --- Body / cookie parsing ------------------------------------------------
+// CreatorFeed's inbound checkout webhook must be signature-verified over
+// the EXACT bytes received, so it gets a raw body parser mounted ahead of
+// express.json(). body-parser marks the request as already-parsed, so the
+// JSON parser below skips it; every other route is unaffected.
+app.use('/api/v1/creator-feed/webhook', express.raw({ type: '*/*', limit: '1mb' }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(config.auth.cookieSecret));

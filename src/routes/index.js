@@ -17,6 +17,7 @@ const walletRoutes = require('./wallet.routes');
 const kycRoutes = require('./kyc.routes');
 const adminRoutes = require('./admin.routes');
 const metaRoutes = require('./meta.routes');
+const creatorFeedRoutes = require('./creatorFeed.routes');
 
 const router = express.Router();
 
@@ -33,5 +34,6 @@ router.use('/wallet', walletRoutes);
 router.use('/kyc', kycRoutes);
 router.use('/admin', adminRoutes);
 router.use('/meta', metaRoutes);
+router.use('/creator-feed', creatorFeedRoutes);
 
 module.exports = router;

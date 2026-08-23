@@ -831,3 +831,25 @@ body.is-admin[data-theme='light'] { --accent: #6244e0; --accent-hover: #4e33c4; 
   .stat-card, .glass-card { padding: 16px; }
   .app-main h1 { font-size: 1.35rem; }
 }
+
+/* --- Wallet page: static, module-separated layout ------------------------ */
+.wallet-module { margin-bottom: 26px; }
+.wallet-module-head { margin: 0 0 12px; }
+.wallet-module-head h2 { font-size: 1.15rem; letter-spacing: -0.01em; }
+.wallet-module-head p { color: var(--text-faint); font-size: 0.88rem; margin-top: 4px; }
+.wallet-page .withdraw-form-card { position: static; }
+/* No motion / hover effects anywhere on the wallet page */
+.wallet-page .app-main *,
+.wallet-page .app-main *::before,
+.wallet-page .app-main *::after { animation: none !important; }
+.wallet-page .app-main .card,
+.wallet-page .app-main .table-card,
+.wallet-page .app-main .wallet-balance-card { transition: none !important; transform: none !important; }
+.wallet-page .app-main .card:hover,
+.wallet-page .app-main .table-card:hover {
+  border-color: var(--border);
+  box-shadow: var(--shadow-card);
+  transform: none;
+}
+.wallet-page .data-table tbody tr { transition: none !important; }
+.wallet-page .data-table tbody tr:hover { background: transparent; box-shadow: none; transform: none; }

@@ -218,4 +218,68 @@ async function processPendingPurchase(purchaseId, { simulate } = {}) {
   }
 }
 
-module.exports = { processPendingPurchase };
+/**
+ * Externally-settled purchase (CreatorFeed checkout webhook).
+ *
+ * Identical to Phase 2 of `processPendingPurchase` above, MINUS the
+ * gateway call: the money was already collected by CreatorFeed's own
+ * hosted checkout before the webhook fired, so charging again here would
+ * be wrong. The lock + reward math + wallet credits are the exact same
+ * code path (`resolveCredits`), so the payout split can never drift
+ * between the two entry points.
+ *
+ * @param {number} purchaseId - an existing 'pending' purchase row
+ * @param {string} externalReference - the provider's transaction id,
+ *   stored in `payment_gateway_reference` (also the idempotency key —
+ *   see purchase.model.js's `findByGatewayReference`).
+ */
+async function creditExternalPurchase(purchaseId, externalReference) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const lockedPurchase = await purchaseModel.findPendingByIdForUpdate(client, purchaseId);
+    if (!lockedPurchase) {
+      throw new Error(
+        `rewardEngine.creditExternalPurchase: purchase ${purchaseId} was resolved ` +
+        'concurrently — refusing to credit it a second time.'
+      );
+    }
+
+    const buyer = await userModel.findReferrerChainInfo(client, lockedPurchase.buyer_id);
+    const course = await courseModel.findCourseById(client, lockedPurchase.course_id);
+    const credits = await resolveCredits(client, { buyer, course });
+
+    for (const credit of credits) {
+      // eslint-disable-next-line no-await-in-loop
+      await rewardTransactionModel.createRewardTransaction(client, {
+        purchaseId: lockedPurchase.id,
+        recipientId: credit.recipientId,
+        rewardType: credit.rewardType,
+        amount: credit.amount,
+      });
+      // eslint-disable-next-line no-await-in-loop
+      await userModel.incrementWalletBalance(client, credit.recipientId, credit.amount);
+    }
+
+    const succeeded = await purchaseModel.markSuccess(client, purchaseId, externalReference);
+    await client.query('COMMIT');
+
+    return {
+      id: succeeded.id,
+      status: succeeded.status,
+      courseId: succeeded.course_id,
+      amount: succeeded.amount,
+      paymentGatewayReference: succeeded.payment_gateway_reference,
+      failureReason: null,
+      credits,
+    };
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+module.exports = { processPendingPurchase, creditExternalPurchase };

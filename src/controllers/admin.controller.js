@@ -32,6 +32,7 @@ const courseModel = require('../models/course.model');
 const lectureModel = require('../models/lecture.model');
 const kycModel = require('../models/kyc.model');
 const withdrawalModel = require('../models/withdrawal.model');
+const withdrawalEngine = require('../services/withdrawalEngine');
 const fraudFlagModel = require('../models/fraudFlag.model');
 const { serializeLecture } = require('./lecture.controller');
 const { hashPassword } = require('../utils/password');
@@ -621,10 +622,49 @@ async function getAllWithdrawals(req, res, next) {
       status: row.status,
       payoutGatewayReference: row.payout_gateway_reference,
       failureReason: row.failure_reason,
+      holderName: row.holder_name,
+      holderEmail: row.holder_email,
+      accountNumberLast4: row.account_number_last4,
+      ifscCode: row.ifsc_code,
+      upiId: row.upi_id,
       createdAt: row.created_at,
       updatedAt: row.updated_at,
     }));
     return res.status(200).json({ withdrawals });
+  } catch (err) {
+    return next(err);
+  }
+}
+
+/**
+ * POST /admin/withdrawals/:id/approve — releases a pending withdrawal to
+ * the payout provider (CreatorFeed when configured). The wallet balance
+ * was already reserved when the user submitted the request; the engine
+ * refunds it automatically if the payout is declined.
+ */
+async function approveWithdrawal(req, res, next) {
+  try {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id <= 0) {
+      return next(createHttpError(400, 'A valid withdrawal id is required.'));
+    }
+    const withdrawal = await withdrawalEngine.approveAndPayout(id);
+    return res.status(200).json({ withdrawal });
+  } catch (err) {
+    return next(err);
+  }
+}
+
+/** POST /admin/withdrawals/:id/reject — refunds the reserved amount. */
+async function rejectWithdrawal(req, res, next) {
+  try {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id <= 0) {
+      return next(createHttpError(400, 'A valid withdrawal id is required.'));
+    }
+    const reason = typeof req.body?.reason === 'string' ? req.body.reason.trim() : '';
+    const withdrawal = await withdrawalEngine.rejectWithdrawal(id, reason || 'Rejected by admin.');
+    return res.status(200).json({ withdrawal });
   } catch (err) {
     return next(err);
   }
@@ -707,6 +747,8 @@ module.exports = {
   setUserActiveStatus,
   getKycSubmissions,
   getAllWithdrawals,
+  approveWithdrawal,
+  rejectWithdrawal,
   getReferralTree,
   getFraudFlags,
 };

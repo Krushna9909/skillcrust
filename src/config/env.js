@@ -159,6 +159,37 @@ const config = {
     aesKey: process.env.AES_ENCRYPTION_KEY,
   },
 
+  // Creator Feed integration (external API by CreatorFeed Technologies).
+  // Optional — when CREATORFEED_API_TOKEN is absent the /creator-feed
+  // routes respond 503 instead of the app refusing to boot.
+  creatorFeed: {
+    baseUrl: (process.env.CREATORFEED_API_BASE_URL || 'https://prod.creatorfeed.in').replace(/\/+$/, ''),
+    apiToken: process.env.CREATORFEED_API_TOKEN || null,
+
+    // Inbound webhook (CreatorFeed's hosted checkout -> our server).
+    // `webhookSecret` is the shared security key pasted into CreatorFeed's
+    // dashboard; without it the webhook route refuses every request (503)
+    // rather than trusting unsigned traffic. The header name and whether
+    // the key arrives as a plain token or an HMAC-SHA256 of the raw body
+    // are provider-configurable, so both are env-driven.
+    webhookSecret: process.env.CREATORFEED_WEBHOOK_SECRET || null,
+    webhookSignatureHeader: process.env.CREATORFEED_WEBHOOK_HEADER || 'x-webhook-signature',
+    webhookSignatureMode: (process.env.CREATORFEED_WEBHOOK_MODE || 'hmac').toLowerCase(),
+
+    // Maps CreatorFeed product UUIDs to our own courses.id, e.g.
+    // CREATORFEED_PRODUCT_MAP={"400217a3-...":3,"9f21...":5}
+    productMap: (() => {
+      try {
+        const parsed = JSON.parse(process.env.CREATORFEED_PRODUCT_MAP || '{}');
+        return parsed && typeof parsed === 'object' ? parsed : {};
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn('[config/env] CREATORFEED_PRODUCT_MAP is not valid JSON — ignoring it.');
+        return {};
+      }
+    })(),
+  },
+
   // Checkpoint 8: admin sessions — deliberately separate secret/expiry
   // from regular users (see src/utils/adminAuthToken.js). Shorter default
   // expiry than users' 7d, since admins can view all financial/KYC data.

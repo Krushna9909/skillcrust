@@ -50,6 +50,9 @@ const { createHttpError } = require('../utils/httpError');
 const payoutGateway = require('./payout');
 const userModel = require('../models/user.model');
 const withdrawalModel = require('../models/withdrawal.model');
+const config = require('../config/env');
+const creatorFeed = require('./creatorFeed');
+const { decryptField } = require('../utils/encryption');
 
 /**
  * @param {object} params
@@ -59,7 +62,7 @@ const withdrawalModel = require('../models/withdrawal.model');
  * @returns {Promise<object>} the new withdrawal row (status 'pending')
  * @throws {HttpError} 400 if the wallet balance is insufficient
  */
-async function createAndReserveWithdrawal({ userId, amount, method }) {
+async function createAndReserveWithdrawal({ userId, amount, method, payoutDetails }) {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -69,7 +72,7 @@ async function createAndReserveWithdrawal({ userId, amount, method }) {
       throw createHttpError(400, 'Insufficient wallet balance for this withdrawal.');
     }
 
-    const withdrawal = await withdrawalModel.createPendingWithdrawal(client, { userId, amount, method });
+    const withdrawal = await withdrawalModel.createPendingWithdrawal(client, { userId, amount, method, payoutDetails });
 
     await client.query('COMMIT');
     return withdrawal;
@@ -158,6 +161,130 @@ async function processPendingWithdrawal(withdrawalId, { simulate } = {}) {
   }
 }
 
+/**
+ * Admin approval path (the flow the wallet page now uses): a `pending`
+ * withdrawal sits untouched — funds already reserved — until an admin
+ * approves it here. On approval we hand the stored payout destination to
+ * the external CreatorFeed payout API when it is configured, and fall
+ * back to the local mock payout gateway when it is not (dev/test), so
+ * the state machine below is identical either way.
+ */
+async function approveAndPayout(withdrawalId, { simulate } = {}) {
+  // --- Phase 1: pending -> processing (short transaction) ---------------
+  const phase1Client = await pool.connect();
+  let withdrawal;
+  try {
+    await phase1Client.query('BEGIN');
+
+    const locked = await withdrawalModel.findPendingByIdForUpdate(phase1Client, withdrawalId);
+    if (!locked) {
+      throw createHttpError(409, 'This withdrawal is no longer pending approval.');
+    }
+
+    withdrawal = await withdrawalModel.markProcessing(phase1Client, withdrawalId);
+    await phase1Client.query('COMMIT');
+  } catch (err) {
+    await phase1Client.query('ROLLBACK');
+    throw err;
+  } finally {
+    phase1Client.release();
+  }
+
+  // --- Phase 2: call the payout provider, no transaction/lock held ------
+  let payoutResult;
+  if (config.creatorFeed.apiToken) {
+    try {
+      const response = await creatorFeed.submitPayoutRequest({
+        creator_reference: String(withdrawal.user_id),
+        holder_name: withdrawal.holder_name || '',
+        holder_email: withdrawal.holder_email || '',
+        account_number: withdrawal.account_number_encrypted
+          ? decryptField(withdrawal.account_number_encrypted)
+          : '',
+        ifsc_code: withdrawal.ifsc_code || '',
+        upi_id: withdrawal.upi_id || '',
+        amount: String(withdrawal.amount),
+      });
+      payoutResult = {
+        success: true,
+        payoutId: String(
+          (response && (response.payout_id || response.id || response.reference)) || 'creatorfeed'
+        ),
+      };
+    } catch (err) {
+      payoutResult = {
+        success: false,
+        failureReason: 'Payout provider declined this request. Please contact your assigned manager.',
+      };
+    }
+  } else {
+    payoutResult = await payoutGateway.payout({
+      amount: withdrawal.amount,
+      method: withdrawal.method,
+      simulate,
+    });
+  }
+
+  // --- Phase 3: processing -> paid|failed (short transaction) -----------
+  const phase3Client = await pool.connect();
+  try {
+    await phase3Client.query('BEGIN');
+
+    const locked = await withdrawalModel.findProcessingByIdForUpdate(phase3Client, withdrawalId);
+    if (!locked) {
+      throw createHttpError(409, 'This withdrawal was resolved concurrently.');
+    }
+
+    if (payoutResult.success) {
+      const paid = await withdrawalModel.markPaid(phase3Client, withdrawalId, payoutResult.payoutId);
+      await phase3Client.query('COMMIT');
+      return serialize(paid);
+    }
+
+    await userModel.incrementWalletBalance(phase3Client, locked.user_id, locked.amount);
+    const failed = await withdrawalModel.markFailed(phase3Client, withdrawalId, payoutResult.failureReason);
+    await phase3Client.query('COMMIT');
+    return serialize(failed);
+  } catch (err) {
+    await phase3Client.query('ROLLBACK');
+    throw err;
+  } finally {
+    phase3Client.release();
+  }
+}
+
+/**
+ * Admin rejection: mark the pending withdrawal `failed` and refund the
+ * reserved amount in the same transaction — nothing ever reaches the
+ * payout provider.
+ */
+async function rejectWithdrawal(withdrawalId, reason) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const locked = await withdrawalModel.findPendingByIdForUpdate(client, withdrawalId);
+    if (!locked) {
+      throw createHttpError(409, 'This withdrawal is no longer pending approval.');
+    }
+
+    await userModel.incrementWalletBalance(client, locked.user_id, locked.amount);
+    const failed = await withdrawalModel.markFailed(
+      client,
+      withdrawalId,
+      (reason && String(reason).slice(0, 240)) || 'Rejected by admin.'
+    );
+
+    await client.query('COMMIT');
+    return serialize(failed);
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
 function serialize(row) {
   return {
     id: row.id,
@@ -166,9 +293,21 @@ function serialize(row) {
     method: row.method,
     payoutGatewayReference: row.payout_gateway_reference,
     failureReason: row.failure_reason,
+    holderName: row.holder_name,
+    holderEmail: row.holder_email,
+    accountNumberLast4: row.account_number_last4,
+    ifscCode: row.ifsc_code,
+    upiId: row.upi_id,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
 }
 
-module.exports = { createAndReserveWithdrawal, processPendingWithdrawal, serialize };
+module.exports = {
+  createAndReserveWithdrawal,
+  processPendingWithdrawal,
+  approveAndPayout,
+  rejectWithdrawal,
+  serialize,
+};
+

@@ -48,6 +48,7 @@ const crypto = require('crypto');
 
 const app = require('../src/app');
 const { pool } = require('../src/config/db');
+const withdrawalEngine = require('../src/services/withdrawalEngine');
 const userModel = require('../src/models/user.model');
 const { COMPANY_REFER_CODE } = require('../src/utils/constants');
 
@@ -272,11 +273,26 @@ test('full journey: signup -> referred purchase -> reward credited -> KYC -> wit
   // --- 5. Withdraw the full referral earnings to bank -----------------------
   const withdrawal = await referrerSession('/wallet/withdraw', {
     method: 'POST',
-    body: { amount: expectedDirectBonus, method: 'bank', simulate: 'success' },
+    body: {
+      amount: expectedDirectBonus,
+      method: 'bank',
+      holderName: 'Referrer Smoke',
+      holderEmail: 'referrer.smoke@example.com',
+      accountNumber: '123456789012',
+      ifscCode: 'HDFC0001234',
+    },
   });
-  assert.equal(withdrawal.status, 201, JSON.stringify(withdrawal.data));
-  assert.equal(withdrawal.data.withdrawal.status, 'paid');
-  assert.ok(withdrawal.data.withdrawal.payoutGatewayReference);
+  // The request now stops at 'pending' — an admin approves it before
+  // anything reaches the payout provider.
+  assert.equal(withdrawal.status, 202, JSON.stringify(withdrawal.data));
+  assert.equal(withdrawal.data.withdrawal.status, 'pending');
+
+  const approved = await withdrawalEngine.approveAndPayout(
+    withdrawal.data.withdrawal.id,
+    { simulate: 'success' }
+  );
+  assert.equal(approved.status, 'paid');
+  assert.ok(approved.payoutGatewayReference);
 
   // --- 6. Confirm the wallet is now zero, and history shows the payout -----
   const finalProfile = await referrerSession('/user/profile');

@@ -1,4 +1,3 @@
-
 # Render blueprint — one web service + one managed Postgres database.
 services:
   - type: web

@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const profile = await initAppShell();
   if (!profile) return;
 
-  window.countUp(document.getElementById('walletBalance'), profile.walletBalance, formatRupees);
+  document.getElementById('walletBalance').textContent = formatRupees(profile.walletBalance);
 
   document.getElementById('withdrawalsTableWrap').innerHTML =
     '<div style="padding:18px 22px 22px;">' + window.skeleton(3) + '</div>';
@@ -80,6 +80,8 @@ function wireMethodToggle() {
       document.querySelectorAll('#methodToggle button').forEach((b) => b.classList.remove('is-active'));
       btn.classList.add('is-active');
       selectedMethod = btn.dataset.method;
+      document.getElementById('bankFields').hidden = selectedMethod !== 'bank';
+      document.getElementById('upiFields').hidden = selectedMethod !== 'upi';
       updateKycHint();
     });
   });
@@ -113,23 +115,58 @@ function wireWithdrawForm() {
       return;
     }
 
+    const payload = {
+      amount,
+      method: selectedMethod,
+      holderName: document.getElementById('holderName').value.trim(),
+      holderEmail: document.getElementById('holderEmail').value.trim(),
+    };
+
+    if (!payload.holderName) {
+      messageEl.innerHTML = '<div class="alert alert-error">Enter the account holder name.</div>';
+      return;
+    }
+    if (!payload.holderEmail) {
+      messageEl.innerHTML = '<div class="alert alert-error">Enter an email for payout updates.</div>';
+      return;
+    }
+
+    if (selectedMethod === 'bank') {
+      payload.accountNumber = document.getElementById('accountNumber').value.replace(/\s+/g, '');
+      payload.ifscCode = document.getElementById('ifscCode').value.trim().toUpperCase();
+      if (!/^\d{9,18}$/.test(payload.accountNumber)) {
+        messageEl.innerHTML = '<div class="alert alert-error">Enter a valid bank account number.</div>';
+        return;
+      }
+      if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(payload.ifscCode)) {
+        messageEl.innerHTML = '<div class="alert alert-error">Enter a valid IFSC code.</div>';
+        return;
+      }
+    } else {
+      payload.upiId = document.getElementById('upiId').value.trim();
+      if (!/^[\w.\-]{2,}@[a-zA-Z]{2,}$/.test(payload.upiId)) {
+        messageEl.innerHTML = '<div class="alert alert-error">Enter a valid UPI ID (for example name@bank).</div>';
+        return;
+      }
+    }
+
     window.setLoading(submitBtn, true, 'Processing\u2026');
 
     const result = await apiRequest('/wallet/withdraw', {
       method: 'POST',
-      body: { amount, method: selectedMethod },
+      body: payload,
     });
 
     window.setLoading(submitBtn, false);
 
     if (result.ok) {
-      messageEl.innerHTML = '<div class="alert alert-success">Withdrawal completed \u2014 check your history below.</div>';
-      window.toast('Withdrawal requested successfully', 'success');
+      messageEl.innerHTML = '<div class="alert alert-success">Withdrawal request sent to the admin for approval \u2014 track it in your history below.</div>';
+      window.toast('Withdrawal request sent for approval', 'success');
       form.reset();
       const profileResult = await apiRequest('/user/profile');
       if (profileResult.ok) {
         const balance = profileResult.data.profile.walletBalance;
-        window.countUp(document.getElementById('walletBalance'), balance, formatRupees);
+        document.getElementById('walletBalance').textContent = formatRupees(balance);
         const sidebarWallet = document.getElementById('sidebarWallet');
         if (sidebarWallet) sidebarWallet.textContent = formatRupees(balance);
       }
