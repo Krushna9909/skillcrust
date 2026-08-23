@@ -60,14 +60,17 @@ async function loadLinks() {
     return;
   }
 
-  const links = (result.data.affiliateLinks || []).map((link) => {
-    // Always serve the link from the domain the user is actually on, so
-    // localhost/staging origins from the API never leak into shared links.
+  const links = result.data.affiliateLinks;
+  // The server builds these from FRONTEND_URL, which can still be a
+  // localhost default in some environments. Re-point every link at the
+  // origin the page is actually being served from, so a shared link
+  // always works for the person receiving it.
+  links.forEach((link) => {
     try {
       const parsed = new URL(link.url, window.location.origin);
-      return { ...link, url: window.location.origin + parsed.pathname + parsed.search + parsed.hash };
+      link.url = window.location.origin + parsed.pathname + parsed.search;
     } catch (err) {
-      return link;
+      /* leave the server value untouched if it isn't parseable */
     }
   });
   if (!links || links.length === 0) {
