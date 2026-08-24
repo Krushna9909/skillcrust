@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wallet History — SuccessRich</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/assets/js/theme.js"></script>
+</head>
+<body class="report-page">
+  <div class="app-shell">
+    <div id="appShellRoot"></div>
+
+    <main class="app-main">
+      <div class="page-head">
+        <h1 style="font-size:1.9rem;">Wallet History</h1>
+        <p>Every commission credited and every payout debited, with the balance before and after.</p>
+      </div>
+
+      <div class="report-toolbar">
+        <div class="report-count" id="historyCount">&mdash;</div>
+        <div class="report-search">
+          <input type="search" id="historySearch" placeholder="Search type, source or status" aria-label="Search wallet history">
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div id="historyTableWrap">
+          <p class="empty-state" style="padding:22px;">Loading&hellip;</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/app-shell.js"></script>
+  <script src="/assets/js/wallet-history.js"></script>
+</body>
+</html>

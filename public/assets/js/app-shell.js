@@ -33,11 +33,20 @@ const NAV_ITEMS = [
   { href: '/affiliate-links.html', label: 'Affiliate Links', icon: '\u26D3' },
   { href: '/my-courses.html', label: 'My Courses', icon: '\u25A4' },
   { href: '/upgrade.html', label: 'Upgrade', icon: '\u2191' },
+  {
+    label: 'Report',
+    icon: '\u25A6',
+    children: [
+      { href: '/my-team.html', label: 'My Team' },
+      { href: '/wallet-history.html', label: 'Wallet History' },
+    ],
+  },
   { href: '/leaderboard.html', label: 'Leaderboard', icon: '\u2605' },
   { href: '/wallet.html', label: 'Wallet', icon: '\u20B9' },
   { href: '/kyc.html', label: 'KYC Details', icon: '\u2713' },
   { href: '/profile.html', label: 'Profile', icon: '\u25CF' },
 ];
+
 
 /**
  * Call this at the top of every authenticated page's own script, after
@@ -71,11 +80,31 @@ function renderShellChrome() {
   if (!root) return;
 
   const currentPath = window.location.pathname;
-  const current = NAV_ITEMS.find((item) => item.href === currentPath);
+  const flat = [];
+  NAV_ITEMS.forEach((item) => {
+    if (item.children) item.children.forEach((c) => flat.push(c));
+    else flat.push(item);
+  });
+  const current = flat.find((item) => item.href === currentPath);
   const navHtml = NAV_ITEMS.map((item) => {
+    if (item.children) {
+      const groupOpen = item.children.some((c) => c.href === currentPath);
+      const subs = item.children.map((c) => {
+        const active = currentPath === c.href;
+        return `<li><a href="${c.href}"${active ? ' class="is-active" aria-current="page"' : ''}><span class="dot" aria-hidden="true"></span> ${c.label}</a></li>`;
+      }).join('');
+      return `<li class="nav-group${groupOpen ? ' is-open' : ''}">
+        <button type="button" class="nav-group-toggle${groupOpen ? ' is-active' : ''}" aria-expanded="${groupOpen}">
+          <span class="icon" aria-hidden="true">${item.icon}</span> ${item.label}
+          <span class="chev" aria-hidden="true">\u203A</span>
+        </button>
+        <ul class="nav-subnav">${subs}</ul>
+      </li>`;
+    }
     const isActive = currentPath === item.href;
     return `<li><a href="${item.href}"${isActive ? ' class="is-active" aria-current="page"' : ''}><span class="icon" aria-hidden="true">${item.icon}</span> ${item.label}</a></li>`;
   }).join('');
+
 
   root.insertAdjacentHTML('afterbegin', `
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
@@ -142,6 +171,16 @@ function wireShellInteractions() {
     });
   }
   if (backdrop) backdrop.addEventListener('click', closeSidebar);
+
+  // Report (and any future grouped nav item): click to expand/collapse.
+  document.querySelectorAll('.nav-group-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const group = btn.closest('.nav-group');
+      const open = !group.classList.contains('is-open');
+      group.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', String(open));
+    });
+  });
 
   // Escape closes the mobile drawer — keyboard users should never be
   // trapped behind an overlay they can only dismiss by pointer.

@@ -21,6 +21,7 @@ const { pool } = require('../config/db');
 const config = require('../config/env');
 const courseModel = require('../models/course.model');
 const rewardTransactionModel = require('../models/rewardTransaction.model');
+const userModel = require('../models/user.model');
 
 function serializeCourse(row) {
   return {
@@ -167,10 +168,77 @@ async function getMyCourses(req, res, next) {
   }
 }
 
+/**
+ * GET /user/my-team — Report → My Team. Level-1 (direct) referrals only,
+ * with optional ?search across name/email/phone/refer code.
+ */
+async function getMyTeam(req, res, next) {
+  try {
+    const rows = await userModel.findLevelOneTeam(pool, req.user.id, {
+      search: typeof req.query.search === 'string' && req.query.search.trim()
+        ? req.query.search.trim()
+        : undefined,
+    });
+    return res.status(200).json({
+      members: rows.map((r) => ({
+        id: r.id,
+        name: r.full_name,
+        email: r.email,
+        phone: r.phone,
+        referCode: r.refer_code,
+        package: r.packages || null,
+        status: r.is_active ? 'active' : 'inactive',
+        joinedAt: r.created_at,
+      })),
+    });
+  } catch (err) {
+    return next(err);
+  }
+}
+
+/**
+ * GET /user/wallet-history — Report → Wallet History. Walks the ledger
+ * oldest-first accumulating a running balance so each row can show the
+ * balance BEFORE and AFTER that entry, then returns it newest-first.
+ */
+async function getWalletHistory(req, res, next) {
+  try {
+    const rows = await userModel.findWalletLedger(pool, req.user.id);
+    let balance = 0;
+    const entries = rows.map((r) => {
+      const amount = Number(r.amount);
+      const existing = balance;
+      balance += r.kind === 'credit' ? amount : -amount;
+      return {
+        date: r.created_at,
+        kind: r.kind,
+        type: r.kind === 'credit'
+          ? (r.detail === 'direct' ? 'Direct commission'
+            : r.detail === 'indirect' ? 'Indirect commission'
+            : 'Commission')
+          : `Withdrawal (${String(r.detail || '').toUpperCase()})`,
+        source: r.counterparty
+          ? `${r.counterparty}${r.course_name ? ' \u00b7 ' + r.course_name : ''}`
+          : (r.course_name || '\u2014'),
+        amount,
+        existingAmount: existing,
+        updatedAmount: balance,
+        status: r.status,
+      };
+    });
+    entries.reverse();
+    return res.status(200).json({ entries });
+  } catch (err) {
+    return next(err);
+  }
+}
+
 module.exports = {
   getDashboard,
   getAffiliateLinks,
   getUpgradeOptions,
   getLeaderboard,
   getMyCourses,
+  getMyTeam,
+  getWalletHistory,
 };

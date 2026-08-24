@@ -48,6 +48,12 @@ router.post('/purchase', requireAuth, purchaseCourse);
 // GET /api/v1/user/leaderboard — Checkpoint 7
 router.get('/leaderboard', requireAuth, dashboardController.getLeaderboard);
 
+// GET /api/v1/user/my-team — Report > My Team (level 1 referrals, ?search)
+router.get('/my-team', requireAuth, dashboardController.getMyTeam);
+
+// GET /api/v1/user/wallet-history — Report > Wallet History (commission ledger)
+router.get('/wallet-history', requireAuth, dashboardController.getWalletHistory);
+
 // GET /api/v1/user/profile, PATCH /api/v1/user/profile — Checkpoint 7
 router.get('/profile', requireAuth, profileController.getProfile);
 router.patch('/profile', requireAuth, profileController.updateProfile);

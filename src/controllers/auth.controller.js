@@ -413,4 +413,42 @@ async function resetPassword(req, res, next) {
   }
 }
 
-module.exports = { signup, login, logout, forgotPassword, resetPassword };
+// --- direct password reset (self-service, no email token) -----------------
+//
+// Powers /forgot-password.html: the user proves the email + sets a new
+// password in one step. Rate limited at the route level. Same generic
+// error for "no such user" and "inactive/system account" so this cannot be
+// used to enumerate registered emails.
+
+async function resetPasswordDirect(req, res, next) {
+  const body = req.body || {};
+
+  const emailErr = validateEmail(body.email);
+  if (emailErr) return next(createHttpError(400, emailErr));
+
+  const passwordErr = validatePassword(body.newPassword);
+  if (passwordErr) return next(createHttpError(400, passwordErr));
+
+  if (body.newPassword !== body.confirmNewPassword) {
+    return next(createHttpError(400, 'New password and confirm password do not match.'));
+  }
+
+  const email = body.email.trim().toLowerCase();
+
+  try {
+    const user = await userModel.findByEmail(pool, email);
+    if (!user || user.is_system_account || !user.is_active) {
+      return next(createHttpError(400, 'No active account found for that email.'));
+    }
+
+    const passwordHash = await hashPassword(body.newPassword);
+    await userModel.updatePasswordHash(pool, user.id, passwordHash);
+
+    return res.status(200).json({ message: 'Password has been reset. You can now log in.' });
+  } catch (err) {
+    return next(err);
+  }
+}
+
+module.exports = { signup, login, logout, forgotPassword, resetPassword, resetPasswordDirect };
+

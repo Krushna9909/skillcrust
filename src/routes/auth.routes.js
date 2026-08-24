@@ -34,4 +34,7 @@ router.post('/forgot-password', forgotPasswordLimiter, authController.forgotPass
 // POST /api/v1/auth/reset-password
 router.post('/reset-password', forgotPasswordLimiter, authController.resetPassword);
 
+// POST /api/v1/auth/reset-password-direct  (self-service reset from /forgot-password.html)
+router.post('/reset-password-direct', forgotPasswordLimiter, authController.resetPasswordDirect);
+
 module.exports = router;

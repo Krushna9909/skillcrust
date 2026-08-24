@@ -25,4 +25,11 @@
 
   grid.innerHTML = courses.map(window.courseCardHtml).join('');
   if (window.initReveal) window.initReveal();
+
+  // Safety net: never leave cards (and their artwork) invisible if the
+  // reveal observer doesn't fire.
+  setTimeout(() => {
+    grid.querySelectorAll('.course-card:not(.is-visible)')
+      .forEach((el) => el.classList.add('is-visible'));
+  }, 1200);
 })();

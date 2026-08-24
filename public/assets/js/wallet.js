@@ -17,6 +17,8 @@
 let selectedMethod = 'bank';
 let hasTypeAKyc = false;
 let hasTypeBKyc = false;
+let kycTypeA = null;
+let kycTypeB = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
   const profile = await initAppShell();
@@ -35,8 +37,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadKycStatus() {
   const result = await apiRequest('/kyc');
   if (result.ok) {
-    hasTypeAKyc = !!result.data.kycTypeA;
-    hasTypeBKyc = !!result.data.kycTypeB;
+    kycTypeA = result.data.kycTypeA || null;
+    kycTypeB = result.data.kycTypeB || null;
+    hasTypeAKyc = !!kycTypeA;
+    hasTypeBKyc = !!kycTypeB;
   }
 }
 
@@ -115,40 +119,7 @@ function wireWithdrawForm() {
       return;
     }
 
-    const payload = {
-      amount,
-      method: selectedMethod,
-      holderName: document.getElementById('holderName').value.trim(),
-      holderEmail: document.getElementById('holderEmail').value.trim(),
-    };
-
-    if (!payload.holderName) {
-      messageEl.innerHTML = '<div class="alert alert-error">Enter the account holder name.</div>';
-      return;
-    }
-    if (!payload.holderEmail) {
-      messageEl.innerHTML = '<div class="alert alert-error">Enter an email for payout updates.</div>';
-      return;
-    }
-
-    if (selectedMethod === 'bank') {
-      payload.accountNumber = document.getElementById('accountNumber').value.replace(/\s+/g, '');
-      payload.ifscCode = document.getElementById('ifscCode').value.trim().toUpperCase();
-      if (!/^\d{9,18}$/.test(payload.accountNumber)) {
-        messageEl.innerHTML = '<div class="alert alert-error">Enter a valid bank account number.</div>';
-        return;
-      }
-      if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(payload.ifscCode)) {
-        messageEl.innerHTML = '<div class="alert alert-error">Enter a valid IFSC code.</div>';
-        return;
-      }
-    } else {
-      payload.upiId = document.getElementById('upiId').value.trim();
-      if (!/^[\w.\-]{2,}@[a-zA-Z]{2,}$/.test(payload.upiId)) {
-        messageEl.innerHTML = '<div class="alert alert-error">Enter a valid UPI ID (for example name@bank).</div>';
-        return;
-      }
-    }
+    const payload = { amount, method: selectedMethod };
 
     window.setLoading(submitBtn, true, 'Processing\u2026');
 
@@ -160,12 +131,19 @@ function wireWithdrawForm() {
     window.setLoading(submitBtn, false);
 
     if (result.ok) {
-      messageEl.innerHTML = '<div class="alert alert-success">Withdrawal request sent to the admin for approval \u2014 track it in your history below.</div>';
-      window.toast('Withdrawal request sent for approval', 'success');
+      const w = (result.data && result.data.withdrawal) || {};
+      const paid = w.status === 'paid';
+      messageEl.innerHTML = paid
+        ? `<div class="alert alert-success">Withdrawal of ${escapeHtml(formatRupees(w.amount || amount))} completed via ${escapeHtml((w.method || selectedMethod).toUpperCase())} \u2014 the amount has been debited from your wallet.</div>`
+        : '<div class="alert alert-success">Withdrawal request sent to the admin for approval \u2014 track it in your history below.</div>';
+      window.toast(paid ? 'Payout completed' : 'Withdrawal request sent for approval', 'success');
       form.reset();
-      const profileResult = await apiRequest('/user/profile');
-      if (profileResult.ok) {
-        const balance = profileResult.data.profile.walletBalance;
+      let balance = result.data && result.data.walletBalance;
+      if (balance === undefined || balance === null) {
+        const profileResult = await apiRequest('/user/profile');
+        if (profileResult.ok) balance = profileResult.data.profile.walletBalance;
+      }
+      if (balance !== undefined && balance !== null) {
         document.getElementById('walletBalance').textContent = formatRupees(balance);
         const sidebarWallet = document.getElementById('sidebarWallet');
         if (sidebarWallet) sidebarWallet.textContent = formatRupees(balance);

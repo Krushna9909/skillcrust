@@ -45,7 +45,12 @@ function detailHtml(course) {
     <details class="faq-item reveal"><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('');
   const skills = (copy.skills || []).map((s) => `<li>${esc(s)}</li>`).join('');
 
+  const art = window.courseImage ? window.courseImage(course.name) : '';
+
   return `
+    ${art ? `<div class="course-hero-media">
+      <img src="${art}" alt="${esc(course.name)} course artwork" width="1600" height="640" onerror="this.onerror=null; this.src='/assets/img/course-skills.jpg';">
+    </div>` : ''}
     <div class="section-head" style="text-align:left; margin-inline:0;">
       <a href="/courses.html" class="eyebrow">← All courses</a>
       <h1 style="font-size:clamp(2rem,4.6vw,3rem);">${esc(course.name)}</h1>

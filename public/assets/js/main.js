@@ -98,29 +98,64 @@ function initHeroStats() {
 }
 
 /**
- * Courses dropdown: hover/focus is handled in CSS. This only adds
- * keyboard dismissal (Escape) and tap-to-open on touch devices, where
- * :hover never fires.
+ * Courses dropdown: click-to-open on every device (no hover opening).
+ * Clicking the "Courses" nav item toggles the panel; clicking a course
+ * inside goes straight to that course's detail + purchase page.
  */
 function initCourseDropdown() {
   const parent = document.querySelector('.has-dropdown');
   if (!parent) return;
   const trigger = parent.querySelector('a');
+  if (!trigger) return;
+
+  trigger.setAttribute('aria-haspopup', 'true');
+  trigger.setAttribute('aria-expanded', 'false');
+
+  const close = () => {
+    parent.classList.remove('is-open');
+    trigger.setAttribute('aria-expanded', 'false');
+  };
 
   trigger.addEventListener('click', (e) => {
-    if (!window.matchMedia('(hover: none)').matches) return;
-    if (!parent.classList.contains('is-open')) {
-      e.preventDefault();
-      parent.classList.add('is-open');
-    }
+    e.preventDefault();
+    const open = !parent.classList.contains('is-open');
+    parent.classList.toggle('is-open', open);
+    trigger.setAttribute('aria-expanded', String(open));
   });
+
   document.addEventListener('click', (e) => {
-    if (!parent.contains(e.target)) parent.classList.remove('is-open');
+    if (!parent.contains(e.target)) close();
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') parent.classList.remove('is-open');
+    if (e.key === 'Escape') close();
   });
+
+  hydrateCourseDropdown(parent);
 }
+
+/**
+ * Fills the dropdown with the live course list so each entry links to
+ * /course-detail.html?id=<real id> (detail + purchase page). Falls back
+ * silently to the static markup if the API isn't reachable.
+ */
+async function hydrateCourseDropdown(parent) {
+  const panel = parent.querySelector('.dropdown-panel');
+  if (!panel || typeof window.apiRequest !== 'function') return;
+
+  const result = await window.apiRequest('/courses');
+  if (!result || !result.ok || !result.data || !Array.isArray(result.data.courses)) return;
+  const courses = result.data.courses;
+  if (courses.length === 0) return;
+
+  const esc = window.escapeHtml || ((s) => String(s));
+  const money = window.formatRupees || ((n) => '\u20b9' + n);
+  panel.innerHTML =
+    courses.map((c) =>
+      `<a href="/course-detail.html?id=${encodeURIComponent(c.id)}">${esc(c.name)}<span class="price">${money(c.price)}</span></a>`
+    ).join('') +
+    '<a href="/courses.html" class="all">View all courses \u2192</a>';
+}
+
 
 /**
  * SuccessRich logo intro. Shows a short animated logo curtain the first
@@ -199,30 +234,32 @@ window.logoMarkSvg = window.logoMarkSvg || function () {
     '<svg class="logo-mark" viewBox="0 0 48 48" fill="none" aria-hidden="true">' +
     '<defs>' +
     '<linearGradient id="srBlue" x1="0" y1="1" x2="1" y2="0">' +
-    '<stop offset="0%" stop-color="#0E3A73"/><stop offset="100%" stop-color="#1E63B8"/></linearGradient>' +
+    '<stop offset="0%" stop-color="#6D28D9"/><stop offset="100%" stop-color="#A855F7"/></linearGradient>' +
     '<linearGradient id="srGold" x1="0" y1="1" x2="1" y2="0">' +
-    '<stop offset="0%" stop-color="#B98E1E"/><stop offset="100%" stop-color="#E8C458"/></linearGradient>' +
+    '<stop offset="0%" stop-color="#22D3EE"/><stop offset="100%" stop-color="#67E8F9"/></linearGradient>' +
+    '<linearGradient id="srRing" x1="0" y1="0" x2="1" y2="1">' +
+    '<stop offset="0%" stop-color="#A855F7"/><stop offset="100%" stop-color="#22D3EE"/></linearGradient>' +
     '</defs>' +
-    // money bag (back)
+    // outer badge ring
     '<g class="lm-layer lm-layer-1">' +
-    '<path d="M27.5 15.5h7.2c3.4 2.6 5.3 6.2 5.3 9.9 0 4.1-3.2 6.6-8.9 6.6s-8.9-2.5-8.9-6.6c0-3.7 1.9-7.3 5.3-9.9z" fill="url(#srGold)"/>' +
-    '<path d="M27.2 12.2h7.8l-1.6 3.3h-4.6z" fill="url(#srGold)" opacity=".8"/>' +
-    '<path d="M31.1 19v9M33.6 21.2c0-1-1.1-1.7-2.5-1.7s-2.5.7-2.5 1.7 1.1 1.5 2.5 1.8 2.5.8 2.5 1.8-1.1 1.7-2.5 1.7-2.5-.7-2.5-1.7" stroke="#F7EFD6" stroke-width="1.5" stroke-linecap="round"/>' +
+    '<circle cx="24" cy="24" r="21" stroke="url(#srRing)" stroke-width="2.4" opacity=".55"/>' +
+    '<circle cx="24" cy="24" r="17.2" fill="url(#srBlue)" opacity=".14"/>' +
     '</g>' +
-    // bar chart + rising arrow
+    // S + R monogram
     '<g class="lm-layer lm-layer-2">' +
-    '<rect x="9" y="24" width="5" height="12" rx="1.4" fill="url(#srBlue)"/>' +
-    '<rect x="16.5" y="19" width="5" height="17" rx="1.4" fill="url(#srBlue)"/>' +
-    '<rect x="24" y="14.5" width="5" height="21.5" rx="1.4" fill="url(#srBlue)" opacity=".9"/>' +
-    '<path d="M8 21 17 12.5 23.5 18 34 7.5" stroke="url(#srGold)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>' +
-    '<path d="M27.5 7h7v7" stroke="url(#srGold)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<path d="M23.4 18.4c-.6-1.5-2.1-2.4-4-2.4-2.4 0-4 1.3-4 3.1 0 1.7 1.3 2.6 3.9 3.2 3.3.8 5 2.3 5 5 0 3.1-2.6 5.2-6.3 5.2-3.2 0-5.6-1.5-6.4-4"' +
+    ' stroke="url(#srGold)" stroke-width="2.8" stroke-linecap="round" fill="none"/>' +
+    '<path d="M26.6 32.4V16h5.1c2.9 0 4.8 1.7 4.8 4.4 0 2.6-1.9 4.3-4.8 4.3h-5.1M31.4 24.8l5.3 7.6"' +
+    ' stroke="url(#srBlue)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>' +
     '</g>' +
-    // open book (front)
+    // graduation cap + rupee accent
     '<g class="lm-layer lm-layer-3">' +
-    '<path d="M24 36.5c-3.6-2.9-8.4-4.2-13.6-4.2L4 40.6c5.9 0 12.6 1.3 20 4.4z" fill="url(#srBlue)"/>' +
-    '<path d="M24 36.5c3.6-2.9 8.4-4.2 13.6-4.2L44 40.6c-5.9 0-12.6 1.3-20 4.4z" fill="url(#srGold)"/>' +
+    '<path d="M24 3.6 38 9.2 24 14.8 10 9.2z" fill="url(#srGold)"/>' +
+    '<path d="M15.5 11.6v4.1c0 1.9 3.8 3.2 8.5 3.2s8.5-1.3 8.5-3.2v-4.1" stroke="url(#srBlue)" stroke-width="2" stroke-linecap="round" fill="none" opacity=".85"/>' +
+    '<path d="M38 9.6v6.2" stroke="url(#srGold)" stroke-width="1.8" stroke-linecap="round"/>' +
+    '<path d="M36.6 38.2h6M36.6 41h6M38.2 38.2c2.4 0 3.6 1 3.6 2.6 0 1.7-1.2 2.7-3.6 2.7h-1.6l4.6 4.3" stroke="url(#srGold)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".9"/>' +
     '</g>' +
-    '<path class="lm-spark" d="M40.5 4.2l1.3 2.9 3.2.3-2.4 2.1.7 3.1-2.8-1.6-2.8 1.6.7-3.1-2.4-2.1 3.2-.3z" fill="url(#srGold)"/>' +
+    '<path class="lm-spark" d="M42.4 4.2l1.3 2.9 3.2.3-2.4 2.1.7 3.1-2.8-1.6-2.8 1.6.7-3.1-2.4-2.1 3.2-.3z" fill="url(#srGold)"/>' +
     '</svg>'
   );
 };

@@ -374,6 +374,78 @@ async function findReferralTreeForAdmin(client) {
   return result.rows;
 }
 
+/**
+ * Report → My Team: every LEVEL 1 (direct) referral of this user, with the
+ * package(s) they bought, account status, joining date and contact info.
+ * `search` (optional) matches name / email / phone / refer code.
+ */
+async function findLevelOneTeam(client, userId, { search } = {}) {
+  const params = [userId];
+  let searchClause = '';
+  if (search) {
+    params.push(`%${search}%`);
+    const i = params.length;
+    searchClause = `AND (u.full_name ILIKE $${i} OR u.email ILIKE $${i} OR u.phone ILIKE $${i} OR u.refer_code ILIKE $${i})`;
+  }
+
+  const result = await client.query(
+    `SELECT
+       u.id, u.full_name, u.email, u.phone, u.refer_code, u.is_active, u.created_at,
+       (
+         SELECT string_agg(DISTINCT c.name, ', ')
+         FROM purchases p
+         JOIN courses c ON c.id = p.course_id
+         WHERE p.buyer_id = u.id AND p.status = 'success'
+       ) AS packages
+     FROM users u
+     WHERE u.referrer_id = $1 AND u.is_system_account = false
+     ${searchClause}
+     ORDER BY u.created_at DESC`,
+    params
+  );
+  return result.rows;
+}
+
+/**
+ * Report → Wallet History: the full money-movement ledger for one user —
+ * every commission credit (reward_transactions) and every withdrawal debit
+ * (withdrawals), oldest first so the caller can walk a running balance.
+ */
+async function findWalletLedger(client, userId) {
+  const result = await client.query(
+    `SELECT
+       'credit' AS kind,
+       rt.created_at,
+       rt.amount,
+       rt.reward_type AS detail,
+       c.name AS course_name,
+       buyer.full_name AS counterparty,
+       'credited' AS status
+     FROM reward_transactions rt
+     LEFT JOIN purchases p ON p.id = rt.purchase_id
+     LEFT JOIN courses c ON c.id = p.course_id
+     LEFT JOIN users buyer ON buyer.id = p.buyer_id
+     WHERE rt.recipient_id = $1
+
+     UNION ALL
+
+     SELECT
+       'debit' AS kind,
+       w.created_at,
+       w.amount,
+       w.method AS detail,
+       NULL AS course_name,
+       NULL AS counterparty,
+       w.status
+     FROM withdrawals w
+     WHERE w.user_id = $1 AND w.status <> 'rejected'
+
+     ORDER BY created_at ASC, kind ASC`,
+    [userId]
+  );
+  return result.rows;
+}
+
 module.exports = {
   findByEmail,
   findByPhone,
@@ -393,6 +465,8 @@ module.exports = {
   createUserByAdmin,
   setUserActiveStatus,
   findReferralTreeForAdmin,
+  findLevelOneTeam,
+  findWalletLedger,
   createUser,
   updatePasswordHash,
 };

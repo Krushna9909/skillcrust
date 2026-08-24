@@ -63,14 +63,43 @@
             <div><strong data-count="4.8" data-decimals="1">0</strong><span>Average rating ★</span></div>
           </div>
         </div>
-        <div class="hero-video reveal is-visible">
-          <video
-            class="hero-video-el"
-            autoplay muted loop playsinline preload="auto"
-            poster="/assets/media/hero-loop-poster.jpg"
-            aria-label="SuccessRich learners building real skills">
-            <source src="/assets/media/hero-loop.mp4" type="video/mp4">
-          </video>
+        <div class="hero-video hero-live reveal is-visible">
+          <svg class="hv-scene" viewBox="0 0 520 360" fill="none" role="img" aria-label="Animated illustration of skills turning into earnings">
+            <defs>
+              <linearGradient id="hvGrad" x1="0" y1="1" x2="1" y2="0">
+                <stop offset="0%" stop-color="#6D28D9"/><stop offset="100%" stop-color="#22D3EE"/>
+              </linearGradient>
+              <linearGradient id="hvGrad2" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#A855F7"/><stop offset="100%" stop-color="#22D3EE"/>
+              </linearGradient>
+            </defs>
+
+            <g class="hv-grid" stroke="rgba(255,255,255,.06)">
+              <path d="M0 90h520M0 160h520M0 230h520M0 300h520"/>
+              <path d="M100 0v360M200 0v360M300 0v360M400 0v360"/>
+            </g>
+
+            <g class="hv-orbit">
+              <circle cx="260" cy="180" r="128" stroke="rgba(168,85,247,.20)" stroke-dasharray="5 9"/>
+              <circle class="hv-node" cx="388" cy="180" r="7" fill="#22D3EE"/>
+              <circle class="hv-node" cx="132" cy="180" r="5" fill="#A855F7"/>
+              <circle class="hv-node" cx="260" cy="52" r="4" fill="#84CC16"/>
+            </g>
+
+            <g class="hv-bars">
+              <rect class="hv-bar" x="92"  y="196" width="38" height="104" rx="10" fill="url(#hvGrad)" opacity=".5"/>
+              <rect class="hv-bar" x="152" y="176" width="38" height="124" rx="10" fill="url(#hvGrad)" opacity=".65"/>
+              <rect class="hv-bar" x="212" y="150" width="38" height="150" rx="10" fill="url(#hvGrad)" opacity=".8"/>
+              <rect class="hv-bar" x="272" y="122" width="38" height="178" rx="10" fill="url(#hvGrad)" opacity=".9"/>
+              <rect class="hv-bar" x="332" y="92"  width="38" height="208" rx="10" fill="url(#hvGrad)"/>
+            </g>
+
+            <path class="hv-line" d="M100 236 C 170 214, 210 168, 270 146 S 400 106, 452 74"
+                  stroke="url(#hvGrad2)" stroke-width="3.5" stroke-linecap="round"/>
+            <circle class="hv-dot" cx="452" cy="74" r="8" fill="#22D3EE"/>
+            <circle class="hv-dot-halo" cx="452" cy="74" r="8" fill="none" stroke="#22D3EE" stroke-width="2"/>
+          </svg>
+
           <span class="hv-glow" aria-hidden="true"></span>
           <span class="hv-scan" aria-hidden="true"></span>
           <div class="hv-badge hv-live" aria-hidden="true"><span class="dot"></span>Live now</div>
@@ -91,12 +120,9 @@
           <div class="skeleton skeleton-card"></div>
           <div class="skeleton skeleton-card"></div>
           <div class="skeleton skeleton-card"></div>
-          <div class="skeleton skeleton-card"></div>
-          <div class="skeleton skeleton-card"></div>
-          <div class="skeleton skeleton-card"></div>
         </div>
         <div class="text-center mt-lg reveal">
-          <a href="/courses.html" class="btn btn-ghost">View all courses</a>
+          <button id="coursePreviewToggle" class="btn btn-ghost" type="button">View all courses</button>
         </div>
       </div>
     </section>

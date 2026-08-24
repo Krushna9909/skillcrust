@@ -49,7 +49,7 @@ function courseCardHtml(course, index) {
     <div class="course-card is-offer reveal-left is-visible" style="--reveal-delay:${(Number(index) || 0) * 0.09}s">
       ${art ? `<span class="course-media">
         ${copy.level ? `<span class="level-badge">${escapeHtml(copy.level)}</span>` : ''}
-        <img src="${art}" alt="${escapeHtml(course.name)} course artwork" width="1024" height="640" loading="lazy">
+        <img src="${art}" alt="${escapeHtml(course.name)} course artwork" width="1024" height="640" loading="lazy" onerror="this.onerror=null; this.src='/assets/img/course-skills.jpg';">
       </span>` : ''}
       <div class="course-body">
         <h3>${escapeHtml(course.name)}</h3>

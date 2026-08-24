@@ -28,59 +28,37 @@
 
       <div id="withdrawMessage"></div>
 
+      <div class="wallet-stack">
       <section class="wallet-module" id="payoutModule">
         <div class="wallet-module-head">
-          <h2>Payout details</h2>
-          <p>Step 1 &mdash; enter where the money should be sent.</p>
+          <h2>Withdrawal request</h2>
+          <p>Step 1 &mdash; choose the method and enter the amount.</p>
         </div>
         <div class="card withdraw-form-card">
-        <p style="color:var(--text-faint); font-size:0.9rem; margin-bottom:16px;">Fill in your payout details below. Your request goes to the admin for approval — once approved, the payout is released to the account you enter here.</p>
-        <div class="method-toggle" id="methodToggle">
-          <button type="button" class="is-active" data-method="bank">Bank Account</button>
-          <button type="button" data-method="upi">UPI</button>
+        <p class="withdraw-note">Enter the amount you want to withdraw. The money is sent to the bank account / UPI ID you already verified in KYC.</p>
+        <div class="withdraw-row">
+          <div class="method-toggle" id="methodToggle">
+            <button type="button" class="is-active" data-method="bank">Bank Account</button>
+            <button type="button" data-method="upi">UPI</button>
+          </div>
+          <form id="withdrawForm" novalidate>
+            <div class="field">
+              <label for="withdrawAmount">Amount (₹)</label>
+              <input type="number" id="withdrawAmount" min="1" step="1" required>
+            </div>
+            <button type="submit" class="btn btn-primary" id="withdrawSubmitBtn">Withdraw</button>
+          </form>
         </div>
         <div id="kycHint"></div>
-        <form id="withdrawForm" novalidate>
-          <div class="field">
-            <label for="holderName">Account holder name</label>
-            <input type="text" id="holderName" autocomplete="name" required>
-          </div>
-          <div class="field">
-            <label for="holderEmail">Email for payout updates</label>
-            <input type="email" id="holderEmail" autocomplete="email" required>
-          </div>
-
-          <div id="bankFields">
-            <div class="field">
-              <label for="accountNumber">Bank account number</label>
-              <input type="text" id="accountNumber" inputmode="numeric" autocomplete="off">
-            </div>
-            <div class="field">
-              <label for="ifscCode">IFSC code</label>
-              <input type="text" id="ifscCode" style="text-transform:uppercase;" autocomplete="off">
-            </div>
-          </div>
-
-          <div id="upiFields" hidden>
-            <div class="field">
-              <label for="upiId">UPI ID</label>
-              <input type="text" id="upiId" placeholder="name@bank" autocomplete="off">
-            </div>
-          </div>
-
-          <div class="field">
-            <label for="withdrawAmount">Amount (₹)</label>
-            <input type="number" id="withdrawAmount" min="1" step="1" required>
-          </div>
-          <button type="submit" class="btn btn-primary" id="withdrawSubmitBtn">Send withdrawal request</button>
-          <p style="color:var(--text-faint); font-size:0.82rem; margin-top:10px;">Double-check the details — payouts sent to a wrong account cannot be reversed.</p>
-        </form>
+        <p class="withdraw-note" style="margin:10px 0 0;">Need to change where the money goes? Update it on your <a href="/kyc.html">KYC page</a>.</p>
         </div>
       </section>
 
+      <div class="wallet-divider"></div>
+
       <section class="wallet-module" id="historyModule">
         <div class="wallet-module-head">
-          <h2>Withdrawal history</h2>
+          <h2>Payout history</h2>
           <p>Step 2 &mdash; track the status of every payout request.</p>
         </div>
         <div class="table-card">
@@ -89,6 +67,9 @@
         </div>
         </div>
       </section>
+      </div>
+
+
     </main>
   </div>
 

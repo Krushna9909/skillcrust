@@ -16,18 +16,16 @@
  */
 
 const { pool } = require('../config/db');
+const config = require('../config/env');
 const { createHttpError } = require('../utils/httpError');
 const userModel = require('../models/user.model');
 const withdrawalModel = require('../models/withdrawal.model');
 const kycModel = require('../models/kyc.model');
 const withdrawalEngine = require('../services/withdrawalEngine');
-const { encryptField } = require('../utils/encryption');
+const { decryptField } = require('../utils/encryption');
 
 const { serialize } = withdrawalEngine;
 
-function str(value) {
-  return typeof value === 'string' ? value.trim() : '';
-}
 
 async function getWalletBalance(req, res, next) {
   try {
@@ -38,52 +36,50 @@ async function getWalletBalance(req, res, next) {
   }
 }
 
-function buildPayoutDetails(method, body) {
-  const holderName = str(body.holderName || body.holder_name);
-  const holderEmail = str(body.holderEmail || body.holder_email);
-
-  if (!holderName) {
-    throw createHttpError(400, 'Account holder name is required.');
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(holderEmail)) {
-    throw createHttpError(400, 'A valid email address is required.');
+/**
+ * Payout destination now comes from the person's already-verified KYC
+ * record instead of being re-typed on the wallet page: Type A (bank) for
+ * `method === 'bank'`, Type B (UPI) for `method === 'upi'`. The wallet
+ * form only asks for the amount. This removes the "typed a wrong account
+ * number on the payout form" failure mode entirely — the money can only
+ * go to the account that was KYC-verified.
+ */
+async function buildPayoutDetailsFromKyc(userId, method) {
+  const user = await userModel.findSafeById(pool, userId);
+  if (!user) {
+    throw createHttpError(404, 'User not found.');
   }
 
   if (method === 'bank') {
-    const accountNumber = str(body.accountNumber || body.account_number).replace(/\s+/g, '');
-    const ifscCode = str(body.ifscCode || body.ifsc_code).toUpperCase();
-
-    if (!/^\d{9,18}$/.test(accountNumber)) {
-      throw createHttpError(400, 'Please enter a valid bank account number.');
+    const kyc = await kycModel.findTypeAByUserId(pool, userId);
+    if (!kyc) {
+      throw createHttpError(403, 'Complete your bank (Type A) KYC before withdrawing to a bank account.');
     }
-    if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifscCode)) {
-      throw createHttpError(400, 'Please enter a valid IFSC code.');
-    }
-
+    const accountNumber = decryptField(kyc.account_number_encrypted);
     return {
-      holderName,
-      holderEmail,
-      accountNumberEncrypted: encryptField(accountNumber),
-      accountNumberLast4: accountNumber.slice(-4),
-      ifscCode,
+      holderName: kyc.account_holder_name || user.full_name,
+      holderEmail: user.email,
+      accountNumberEncrypted: kyc.account_number_encrypted,
+      accountNumberLast4: String(accountNumber).slice(-4),
+      ifscCode: kyc.ifsc_code,
       upiId: null,
     };
   }
 
-  const upiId = str(body.upiId || body.upi_id);
-  if (!/^[\w.\-]{2,}@[a-zA-Z]{2,}$/.test(upiId)) {
-    throw createHttpError(400, 'Please enter a valid UPI ID (for example name@bank).');
+  const kycB = await kycModel.findTypeBByUserId(pool, userId);
+  if (!kycB) {
+    throw createHttpError(403, 'Complete your UPI (Type B) KYC before withdrawing via UPI.');
   }
-
   return {
-    holderName,
-    holderEmail,
+    holderName: user.full_name,
+    holderEmail: user.email,
     accountNumberEncrypted: null,
     accountNumberLast4: null,
     ifscCode: null,
-    upiId,
+    upiId: kycB.upi_id,
   };
 }
+
 
 async function requestWithdrawal(req, res, next) {
   const body = req.body || {};
@@ -114,7 +110,7 @@ async function requestWithdrawal(req, res, next) {
       ));
     }
 
-    const payoutDetails = buildPayoutDetails(method, body);
+    const payoutDetails = await buildPayoutDetailsFromKyc(req.user.id, method);
 
     const withdrawal = await withdrawalEngine.createAndReserveWithdrawal({
       userId: req.user.id,
@@ -122,6 +118,18 @@ async function requestWithdrawal(req, res, next) {
       method,
       payoutDetails,
     });
+
+    // Demo / mock mode (no real payout provider configured): settle the
+    // payout immediately so the amount leaves the wallet and the payout
+    // shows up as `paid` in the history right away. With a real provider
+    // configured we keep the admin-approval flow (202 Accepted).
+    if (!config.creatorFeed.apiToken) {
+      const settled = await withdrawalEngine.processPendingWithdrawal(withdrawal.id, {
+        simulate: 'success',
+      });
+      const walletBalance = await userModel.getWalletBalance(pool, req.user.id);
+      return res.status(200).json({ withdrawal: settled, walletBalance });
+    }
 
     // 202 Accepted — the request is queued for admin approval, no money
     // has moved yet. The payout provider is only called once an admin
