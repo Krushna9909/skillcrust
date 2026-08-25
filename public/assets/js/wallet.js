@@ -63,12 +63,13 @@ async function loadWithdrawals() {
 
   const rows = withdrawals.map((w) => `
     <tr>
-      <td class="amount debit">${formatRupees(w.amount)}</td>
-      <td style="text-transform:uppercase; font-size:0.82rem;">${escapeHtml(w.method)}</td>
-      <td><span class="status-pill ${escapeHtml(w.status)}">${escapeHtml(w.status)}</span></td>
-      <td>${new Date(w.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+      <td class="amount debit" data-label="Amount">${formatRupees(w.amount)}</td>
+      <td data-label="Method" style="text-transform:uppercase; font-size:0.82rem;">${escapeHtml(w.method)}</td>
+      <td data-label="Status"><span class="status-pill ${escapeHtml(w.status)}">${escapeHtml(w.status)}</span></td>
+      <td data-label="Date">${new Date(w.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
     </tr>
   `).join('');
+
 
   wrap.innerHTML = `
     <div class="table-scroll"><table class="data-table">
@@ -78,23 +79,55 @@ async function loadWithdrawals() {
   `;
 }
 
+function methodAllowed(method) {
+  return method === 'bank' ? hasTypeAKyc : hasTypeBKyc;
+}
+
+function selectMethod(method) {
+  selectedMethod = method;
+  document.querySelectorAll('#methodToggle button').forEach((b) => {
+    b.classList.toggle('is-active', b.dataset.method === method);
+  });
+  const bankFields = document.getElementById('bankFields');
+  const upiFields = document.getElementById('upiFields');
+  if (bankFields) bankFields.hidden = method !== 'bank';
+  if (upiFields) upiFields.hidden = method !== 'upi';
+  updateKycHint();
+}
+
 function wireMethodToggle() {
   document.querySelectorAll('#methodToggle button').forEach((btn) => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('#methodToggle button').forEach((b) => b.classList.remove('is-active'));
-      btn.classList.add('is-active');
-      selectedMethod = btn.dataset.method;
-      document.getElementById('bankFields').hidden = selectedMethod !== 'bank';
-      document.getElementById('upiFields').hidden = selectedMethod !== 'upi';
-      updateKycHint();
+      if (!methodAllowed(btn.dataset.method)) {
+        selectMethod(btn.dataset.method); // show the "complete KYC" hint
+        return;
+      }
+      selectMethod(btn.dataset.method);
     });
   });
+
+  // Auto-select whichever method the person has already KYC'd.
+  if (!methodAllowed(selectedMethod)) {
+    if (hasTypeAKyc) selectMethod('bank');
+    else if (hasTypeBKyc) selectMethod('upi');
+    else selectMethod(selectedMethod);
+  } else {
+    selectMethod(selectedMethod);
+  }
 }
 
 function updateKycHint() {
   const hintEl = document.getElementById('kycHint');
   const submitBtn = document.getElementById('withdrawSubmitBtn');
-  const hasKyc = selectedMethod === 'bank' ? hasTypeAKyc : hasTypeBKyc;
+  const hasKyc = methodAllowed(selectedMethod);
+
+  document.querySelectorAll('#methodToggle button').forEach((b) => {
+    const ok = methodAllowed(b.dataset.method);
+    b.dataset.locked = ok ? '' : '1';
+    b.title = ok ? '' : 'Complete this KYC to enable withdrawals with this method';
+    const label = b.dataset.method === 'bank' ? 'Bank Account' : 'UPI';
+    b.innerHTML = ok ? label : `${label}<span class="method-lock">KYC pending</span>`;
+  });
 
   if (!hasKyc) {
     hintEl.innerHTML = `<p class="kyc-hint">You need to complete your ${selectedMethod === 'bank' ? 'bank (Type A)' : 'UPI (Type B)'} KYC before withdrawing this way. <a href="/kyc.html">Complete KYC \u2192</a></p>`;
@@ -103,6 +136,7 @@ function updateKycHint() {
   }
   submitBtn.disabled = !hasKyc;
 }
+
 
 function wireWithdrawForm() {
   const form = document.getElementById('withdrawForm');

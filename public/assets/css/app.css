@@ -1158,3 +1158,67 @@ body.is-admin[data-theme='light'] { --accent: #6244e0; --accent-hover: #4e33c4; 
   .wallet-page #withdrawForm { flex-direction: column; align-items: stretch; }
   .wallet-page #withdrawForm #withdrawSubmitBtn { width: 100%; }
 }
+
+/* ---- Wallet: method availability (KYC-gated) ---------------------------- */
+.wallet-page .method-toggle button[data-locked="1"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.wallet-page .method-toggle button .method-lock {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
+/* ---- Wallet: mobile layout --------------------------------------------- */
+@media (max-width: 720px) {
+  .wallet-page .app-main { padding-left: 14px; padding-right: 14px; }
+  .wallet-page .page-head h1 { font-size: 1.5rem !important; }
+  .wallet-balance-card { padding: 18px; text-align: left; }
+  .wallet-page .wallet-stack { gap: 18px; }
+  .wallet-page .wallet-module-head h2 { font-size: 1.05rem; }
+  .wallet-page .withdraw-form-card { padding: 16px; }
+  .wallet-page .method-toggle { width: 100%; gap: 8px; }
+  .wallet-page .method-toggle button { flex: 1 1 0; min-width: 0; padding: 10px 8px; font-size: 0.86rem; }
+  .wallet-page #withdrawForm { width: 100%; gap: 12px; }
+  .wallet-page #withdrawForm > .field,
+  .wallet-page #withdrawForm #withdrawSubmitBtn { width: 100%; min-width: 0; }
+  .wallet-page #withdrawForm input { height: 46px; font-size: 1rem; }
+  .wallet-page #withdrawForm #withdrawSubmitBtn { height: 48px; }
+
+  /* payout history becomes stacked cards instead of a scrolling table */
+  .wallet-page #withdrawalsTableWrap { overflow-x: visible; }
+  .wallet-page .table-scroll { overflow-x: visible; }
+  .wallet-page .data-table { min-width: 0; width: 100%; display: block; }
+  .wallet-page .data-table thead { display: none; }
+  .wallet-page .data-table tbody { display: block; }
+  .wallet-page .data-table tbody tr {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 6px 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .wallet-page .data-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    grid-column: 1 / -1;
+    padding: 0;
+    border: 0;
+    white-space: normal;
+    text-align: right !important;
+  }
+  .wallet-page .data-table td::before {
+    content: attr(data-label);
+    color: var(--text-faint);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-align: left;
+  }
+}
