@@ -45,6 +45,14 @@ async function loadCourses() {
     document.getElementById(`courseRow${course.id}`).addEventListener('click', () => toggleCourse(course.id));
     document.getElementById(`editCourseForm${course.id}`).addEventListener('submit', (e) => submitEditCourse(e, course.id));
     document.getElementById(`addLectureForm${course.id}`).addEventListener('submit', (e) => submitAddLecture(e, course.id));
+    document.getElementById(`thumbInput${course.id}`).addEventListener('change', (e) => uploadThumbnail(course.id, e.target));
+  });
+
+  container.querySelectorAll('[data-delete-course]').forEach((btn) => {
+    btn.addEventListener('click', (event) => {
+      event.stopPropagation();
+      deleteCourse(Number(btn.dataset.deleteCourse));
+    });
   });
 }
 
@@ -80,6 +88,27 @@ function courseCardHtml(course) {
           </div>
           <button type="submit" class="btn btn-primary" style="padding:9px 18px; font-size:0.85rem;">Save course</button>
         </form>
+
+        <div class="thumb-block">
+          <div class="thumb-preview">
+            <img id="thumbPreview${course.id}" src="${escapeAttr(courseThumbSrc(course))}" alt="${escapeAttr(course.name)} thumbnail">
+          </div>
+          <div class="thumb-actions">
+            <h4>Course thumbnail</h4>
+            <p class="thumb-note">Upload any image — no size limit. Shown on the courses page and course cards.</p>
+            <label class="btn btn-ghost thumb-btn" for="thumbInput${course.id}">Upload thumbnail</label>
+            <input type="file" id="thumbInput${course.id}" accept="image/*" hidden>
+            <div id="thumbMessage${course.id}" class="form-message" role="alert"></div>
+          </div>
+        </div>
+
+        <div class="danger-zone">
+          <div>
+            <h4>Delete course</h4>
+            <p class="thumb-note">Permanently removes this course and its lectures. This cannot be undone.</p>
+          </div>
+          <button type="button" class="btn btn-danger" data-delete-course="${course.id}">Delete course</button>
+        </div>
 
         <h4 style="font-size:0.95rem; margin:26px 0 12px;">Lectures</h4>
         <div id="lectureListWrap${course.id}"><p class="empty-state" style="padding:10px 0;">Loading&hellip;</p></div>
@@ -235,6 +264,14 @@ function wireAddCourseForm() {
   const messageEl = document.getElementById('addCourseMessage');
   const submitBtn = document.getElementById('addCourseSubmitBtn');
 
+  const newThumbInput = document.getElementById('newThumbnail');
+  if (newThumbInput) {
+    newThumbInput.addEventListener('change', () => {
+      const f = newThumbInput.files && newThumbInput.files[0];
+      document.getElementById('newThumbName').textContent = f ? f.name : 'No file chosen';
+    });
+  }
+
   toggleBtn.addEventListener('click', () => {
     card.style.display = card.style.display === 'none' ? 'block' : 'none';
   });
@@ -268,7 +305,17 @@ function wireAddCourseForm() {
       return;
     }
 
+    const newThumbInput = document.getElementById('newThumbnail');
+    const createdId = result.data && result.data.course && result.data.course.id;
+    if (createdId && newThumbInput && newThumbInput.files && newThumbInput.files[0]) {
+      const fd = new FormData();
+      fd.append('thumbnail', newThumbInput.files[0]);
+      await fetch(`/api/v1/admin/courses/${createdId}/thumbnail`, { method: 'POST', credentials: 'include', body: fd })
+        .catch(() => null);
+    }
+
     form.reset();
+    document.getElementById('newThumbName').textContent = 'No file chosen';
     card.style.display = 'none';
     await loadCourses();
   });
@@ -276,4 +323,76 @@ function wireAddCourseForm() {
 
 function escapeAttr(str) {
   return escapeHtml(str).replace(/"/g, '&quot;');
+}
+
+
+/* ---------------------------------------------------------------------------
+ * Thumbnails + delete (admin only)
+ * ------------------------------------------------------------------------- */
+
+function courseThumbSrc(course) {
+  if (course.thumbnailUrl || course.thumbnail_url) return course.thumbnailUrl || course.thumbnail_url;
+  if (window.courseImage) return window.courseImage(course.name);
+  return '/assets/img/course-skills.jpg';
+}
+
+async function uploadThumbnail(courseId, input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+
+  const messageEl = document.getElementById(`thumbMessage${courseId}`);
+  messageEl.textContent = 'Uploading\u2026';
+  messageEl.className = 'form-message';
+
+  // Instant local preview so the admin sees the crop right away.
+  const localUrl = URL.createObjectURL(file);
+  document.getElementById(`thumbPreview${courseId}`).src = localUrl;
+
+  const formData = new FormData();
+  formData.append('thumbnail', file);
+
+  try {
+    const response = await fetch(`/api/v1/admin/courses/${courseId}/thumbnail`, {
+      method: 'POST',
+      credentials: 'include',
+      body: formData,
+    });
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok) {
+      messageEl.textContent = (data && data.error && data.error.message) || 'Could not upload this thumbnail.';
+      messageEl.className = 'form-message is-error';
+      input.value = '';
+      return;
+    }
+
+    const url = (data && (data.thumbnailUrl || data.thumbnail_url)) || '';
+    if (url) document.getElementById(`thumbPreview${courseId}`).src = url;
+    messageEl.textContent = 'Thumbnail updated.';
+    messageEl.className = 'form-message is-success';
+    if (window.toast) window.toast('Thumbnail updated.', 'success');
+  } catch (err) {
+    messageEl.textContent = 'Could not upload this thumbnail \u2014 please try again.';
+    messageEl.className = 'form-message is-error';
+  }
+  input.value = '';
+}
+
+async function deleteCourse(courseId) {
+  const course = coursesData.find((c) => c.id === courseId);
+  const name = course ? course.name : 'this course';
+  if (!window.confirm(`Delete "${name}"? This removes the course and its lectures permanently.`)) return;
+
+  const result = await apiRequest(`/admin/courses/${courseId}`, { method: 'DELETE' });
+
+  if (!result.ok) {
+    const message = apiErrorMessage(result, 'Could not delete this course.');
+    if (window.toast) window.toast(message, 'error');
+    else window.alert(message);
+    return;
+  }
+
+  if (window.toast) window.toast('Course deleted.', 'success');
+  delete lectureCache[courseId];
+  await loadCourses();
 }

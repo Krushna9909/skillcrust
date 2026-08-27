@@ -108,6 +108,24 @@ function wirePhotoUpload() {
     if (!file) return;
 
     messageEl.className = 'form-message';
+
+    // Hard client-side cap: profile photos must be 200 KB or smaller.
+    const MAX_PHOTO_BYTES = 200 * 1024;
+    if (file.size > MAX_PHOTO_BYTES) {
+      const sizeKb = Math.round(file.size / 1024);
+      messageEl.textContent = `That image is ${sizeKb} KB. Please upload a photo under 200 KB.`;
+      messageEl.className = 'form-message is-error';
+      if (window.toast) window.toast(messageEl.textContent, 'error');
+      input.value = '';
+      return;
+    }
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type)) {
+      messageEl.textContent = 'Only JPG, PNG or WebP images are allowed.';
+      messageEl.className = 'form-message is-error';
+      if (window.toast) window.toast(messageEl.textContent, 'error');
+      input.value = '';
+      return;
+    }
     const formData = new FormData();
     formData.append('photo', file);
 

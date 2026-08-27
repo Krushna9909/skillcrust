@@ -37,24 +37,28 @@ function detailHtml(course) {
   const esc = window.escapeHtml;
   const copy = window.courseCopy(course.name) || {};
   const modules = (copy.curriculum || []).map(([title, body], i) => `
-    <div class="module glass reveal">
+    <div class="module glass reveal-left" style="--reveal-delay:${(i % 6) * 0.07}s">
       <span class="num">${String(i + 1).padStart(2, '0')}</span>
       <div><h4>${esc(title)}</h4><p>${esc(body)}</p></div>
     </div>`).join('');
   const faqs = (copy.faqs || []).map(([q, a]) => `
-    <details class="faq-item reveal"><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('');
+    <details class="faq-item reveal-left"><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('');
   const skills = (copy.skills || []).map((s) => `<li>${esc(s)}</li>`).join('');
 
-  const art = window.courseImage ? window.courseImage(course.name) : '';
-
   return `
-    ${art ? `<div class="course-hero-media">
-      <img src="${art}" alt="${esc(course.name)} course artwork" width="1600" height="640" onerror="this.onerror=null; this.src='/assets/img/course-skills.jpg';">
-    </div>` : ''}
-    <div class="section-head" style="text-align:left; margin-inline:0;">
-      <a href="/courses.html" class="eyebrow">← All courses</a>
-      <h1 style="font-size:clamp(2rem,4.6vw,3rem);">${esc(course.name)}</h1>
-      <p class="lede" style="margin-inline:0;">${esc(copy.tagline || course.description || '')}</p>
+    <div class="detail-head reveal-left">
+      <a href="/courses.html" class="back-link">← All courses</a>
+      <div class="detail-head-meta">
+        ${copy.level ? `<span class="level-badge">${esc(copy.level)}</span>` : ''}
+        <span class="detail-chip">Self-paced</span>
+        <span class="detail-chip">Lifetime access</span>
+      </div>
+      <h1>${esc(course.name)}</h1>
+      <p class="lede">${esc(copy.tagline || course.description || '')}</p>
+      <div class="detail-head-cta">
+        <span class="course-price">${window.formatRupees(course.price)}</span>
+        <a href="/signup.html?courseId=${encodeURIComponent(course.id)}" class="btn btn-primary">Enroll Now</a>
+      </div>
     </div>
 
     <div class="detail-grid">
@@ -72,8 +76,8 @@ function detailHtml(course) {
         </div>` : ''}
       </div>
 
-      <aside class="detail-sidebar">
-        <div class="card glass">
+      <aside class="detail-sidebar reveal-right">
+        <div class="card glass detail-buy">
           ${copy.level ? `<span class="level-badge">${esc(copy.level)}</span>` : ''}
           <div class="course-price" style="margin:12px 0 4px;">${window.formatRupees(course.price)}</div>
           <p class="desc">One-time payment · lifetime access</p>

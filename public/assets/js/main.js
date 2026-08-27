@@ -170,27 +170,32 @@ function initLogoSplash() {
   }
   const isHome = /(^\/$|\/index\.html$)/.test(window.location.pathname);
   if (!isHome) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  try { if (sessionStorage.getItem('sc-splash') === '1') return; sessionStorage.setItem('sc-splash', '1'); } catch (e) { /* ignore */ }
+  try {
+    if (sessionStorage.getItem('successrich_intro_seen') === '1') return;
+    sessionStorage.setItem('successrich_intro_seen', '1');
+  } catch (e) { /* ignore */ }
 
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const el = document.createElement('div');
-  el.className = 'logo-splash';
+  el.className = 'sr-intro' + (reduced ? ' is-reduced' : '');
   el.setAttribute('aria-hidden', 'true');
   el.innerHTML =
-    '<div class="splash-inner">' +
-    '<span class="splash-ring"></span>' +
-    window.logoMarkSvg() +
-    '<div class="splash-word">Success<span>Rich</span></div>' +
-    '<div class="splash-tag">Educate \u00b7 Grow \u00b7 Prosper</div>' +
-    '<div class="splash-bar"><i></i></div>' +
+    '<div class="sr-intro-glow"></div>' +
+    '<div class="sr-intro-stage">' +
+    '<div class="sr-intro-logo">' +
+    '<img src="' + window.SR_LOGO_SRC + '" alt="SuccessRich" decoding="async" />' +
+    '<span class="sr-intro-sweep"><i></i></span>' +
+    '</div>' +
     '</div>';
   document.body.appendChild(el);
   document.body.classList.add('is-splashing');
+  const hold = reduced ? 900 : 4300;
+  setTimeout(() => { el.classList.add('is-out'); }, hold);
   setTimeout(() => {
     el.remove();
     document.body.classList.remove('is-splashing');
     document.body.classList.add('splash-done');
-  }, 5300);
+  }, hold + 650);
 }
 
 /** Draws the connecting line across the how-it-works roadmap on scroll. */
@@ -229,39 +234,16 @@ function initCardTilt() {
  * growth chart, rising arrow and star. Keeps the .lm-layer-1/2/3 and
  * .lm-spark class names so the existing splash animation keeps working.
  */
-window.logoMarkSvg = window.logoMarkSvg || function () {
-  return (
-    '<svg class="logo-mark" viewBox="0 0 48 48" fill="none" aria-hidden="true">' +
-    '<defs>' +
-    '<linearGradient id="srBlue" x1="0" y1="1" x2="1" y2="0">' +
-    '<stop offset="0%" stop-color="#6D28D9"/><stop offset="100%" stop-color="#A855F7"/></linearGradient>' +
-    '<linearGradient id="srGold" x1="0" y1="1" x2="1" y2="0">' +
-    '<stop offset="0%" stop-color="#22D3EE"/><stop offset="100%" stop-color="#67E8F9"/></linearGradient>' +
-    '<linearGradient id="srRing" x1="0" y1="0" x2="1" y2="1">' +
-    '<stop offset="0%" stop-color="#A855F7"/><stop offset="100%" stop-color="#22D3EE"/></linearGradient>' +
-    '</defs>' +
-    // outer badge ring
-    '<g class="lm-layer lm-layer-1">' +
-    '<circle cx="24" cy="24" r="21" stroke="url(#srRing)" stroke-width="2.4" opacity=".55"/>' +
-    '<circle cx="24" cy="24" r="17.2" fill="url(#srBlue)" opacity=".14"/>' +
-    '</g>' +
-    // S + R monogram
-    '<g class="lm-layer lm-layer-2">' +
-    '<path d="M23.4 18.4c-.6-1.5-2.1-2.4-4-2.4-2.4 0-4 1.3-4 3.1 0 1.7 1.3 2.6 3.9 3.2 3.3.8 5 2.3 5 5 0 3.1-2.6 5.2-6.3 5.2-3.2 0-5.6-1.5-6.4-4"' +
-    ' stroke="url(#srGold)" stroke-width="2.8" stroke-linecap="round" fill="none"/>' +
-    '<path d="M26.6 32.4V16h5.1c2.9 0 4.8 1.7 4.8 4.4 0 2.6-1.9 4.3-4.8 4.3h-5.1M31.4 24.8l5.3 7.6"' +
-    ' stroke="url(#srBlue)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>' +
-    '</g>' +
-    // graduation cap + rupee accent
-    '<g class="lm-layer lm-layer-3">' +
-    '<path d="M24 3.6 38 9.2 24 14.8 10 9.2z" fill="url(#srGold)"/>' +
-    '<path d="M15.5 11.6v4.1c0 1.9 3.8 3.2 8.5 3.2s8.5-1.3 8.5-3.2v-4.1" stroke="url(#srBlue)" stroke-width="2" stroke-linecap="round" fill="none" opacity=".85"/>' +
-    '<path d="M38 9.6v6.2" stroke="url(#srGold)" stroke-width="1.8" stroke-linecap="round"/>' +
-    '<path d="M36.6 38.2h6M36.6 41h6M38.2 38.2c2.4 0 3.6 1 3.6 2.6 0 1.7-1.2 2.7-3.6 2.7h-1.6l4.6 4.3" stroke="url(#srGold)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".9"/>' +
-    '</g>' +
-    '<path class="lm-spark" d="M42.4 4.2l1.3 2.9 3.2.3-2.4 2.1.7 3.1-2.8-1.6-2.8 1.6.7-3.1-2.4-2.1 3.2-.3z" fill="url(#srGold)"/>' +
-    '</svg>'
-  );
+window.SR_LOGO_SRC = '/assets/img/successrich-logo.png';
+window.SR_LOGO_SM = '/assets/img/successrich-logo-sm.png';
+
+/**
+ * Official SuccessRich logo lockup. The artwork is the official brand file —
+ * never redrawn, never distorted (object-fit: contain, natural ratio kept).
+ */
+window.logoMarkSvg = window.logoMarkSvg || function (variant) {
+  var src = variant === 'full' ? window.SR_LOGO_SRC : window.SR_LOGO_SM;
+  return '<img class="logo-mark logo-official" src="' + src + '" alt="SuccessRich" decoding="async" />';
 };
 
 /** Injects the logo mark into every .brand link that asks for it. */

@@ -12,43 +12,77 @@
   <script src="/assets/js/theme.js"></script>
 </head>
 <body>
-  <main class="auth-shell">
-    <div class="auth-card" style="max-width:480px;">
-      <span class="eyebrow">Admin</span>
-      <h1 style="font-size:1.7rem;">Sign in to the admin panel</h1>
-      <p style="margin-bottom:24px;">Separate from regular user accounts — email, password, and an authenticator code.</p>
+  <main class="auth-shell admin-auth">
+    <div class="admin-auth-form">
+      <div class="auth-card" style="max-width:460px;">
+        <div class="auth-brand"><a href="/" class="brand" data-logo>Success<span>Rich</span></a></div>
+        <span class="eyebrow">Admin</span>
+        <h1 style="font-size:1.6rem;">Sign in to the admin panel</h1>
+        <p id="stepIntro" style="margin-bottom:18px;">Step 1 of 2 — sign in with your admin email and password.</p>
 
-      <div id="formMessage" class="form-message" role="alert"></div>
+        <ol class="auth-steps" id="authSteps">
+          <li class="is-active" data-step="1"><span>1</span>Login</li>
+          <li data-step="2"><span>2</span>2FA code</li>
+        </ol>
 
-      <!-- Step 1: email + password -->
-      <form id="passwordForm" novalidate>
-        <div class="field">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" required autocomplete="username">
-        </div>
-        <div class="field">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" required autocomplete="current-password">
-        </div>
-        <button type="submit" class="btn btn-primary btn-block" id="passwordSubmitBtn">Continue</button>
-      </form>
+        <div id="formMessage" class="form-message" role="alert"></div>
 
-      <!-- Step 2: TOTP (and, on first login, QR setup) -->
-      <form id="totpForm" novalidate style="display:none;">
-        <div id="qrSetupBlock" style="display:none; margin-bottom:22px;">
-          <p style="font-size:0.88rem;">First login for this account — scan this QR code with an authenticator app (Google Authenticator, Authy, etc.), then enter the 6-digit code it shows below to finish setup.</p>
-          <div style="background:#fff; padding:16px; border-radius:var(--radius-md); display:inline-block;">
-            <img id="qrCodeImage" src="" alt="Authenticator setup QR code" style="display:block; width:200px; height:200px;">
+        <!-- Step 1: email + password -->
+        <form id="passwordForm" novalidate>
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required autocomplete="username">
           </div>
-        </div>
-        <p id="totpPrompt" style="font-size:0.88rem;">Enter the 6-digit code from your authenticator app.</p>
-        <div class="field">
-          <label for="totpCode">Authenticator code</label>
-          <input type="text" id="totpCode" name="totpCode" inputmode="numeric" pattern="\d{6}" maxlength="6" autocomplete="one-time-code" required placeholder="000000">
-        </div>
-        <button type="submit" class="btn btn-primary btn-block" id="totpSubmitBtn">Verify &amp; sign in</button>
-      </form>
+          <div class="field">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" id="passwordSubmitBtn">Continue</button>
+        </form>
+
+        <!-- Step 2: TOTP (and, on first login, QR setup) — hidden until step 1 succeeds -->
+        <form id="totpForm" class="is-hidden" novalidate hidden>
+          <button type="button" class="link-back" id="backToPasswordBtn">← Back to login</button>
+          <div id="qrSetupBlock" class="qr-setup is-hidden" hidden>
+            <p>First login for this account — scan this QR code with an authenticator app (Google Authenticator, Authy, etc.), then enter the 6-digit code it shows below to finish setup.</p>
+            <div class="qr-frame">
+              <img id="qrCodeImage" src="" alt="Authenticator setup QR code">
+            </div>
+          </div>
+          <p id="totpPrompt" style="font-size:0.88rem;">Enter the 6-digit code from your authenticator app.</p>
+          <div class="field">
+            <label for="totpCode">Authenticator code</label>
+            <input type="text" id="totpCode" name="totpCode" inputmode="numeric" pattern="\d{6}" maxlength="6" autocomplete="one-time-code" required placeholder="000000">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" id="totpSubmitBtn">Verify &amp; sign in</button>
+        </form>
+      </div>
     </div>
+
+    <aside class="auth-aside admin-aside" aria-label="Admin console overview">
+      <div class="admin-aside-top">
+        <a href="/" class="brand" data-logo aria-label="SuccessRich"></a>
+        <span class="admin-tag">Control Center</span>
+      </div>
+
+      <div class="admin-aside-body">
+        <h2>Everything you run, <span class="grad-anim">in one console.</span></h2>
+        <p>Secure, audited access for the SuccessRich operations team.</p>
+
+        <ul class="admin-feature-list">
+          <li><span class="ic">◆</span><div><strong>Users &amp; referral trees</strong><em>Inspect 2-tier networks, payouts and lineage.</em></div></li>
+          <li><span class="ic">◆</span><div><strong>KYC &amp; withdrawals</strong><em>Approve, hold or reject with a full audit trail.</em></div></li>
+          <li><span class="ic">◆</span><div><strong>Courses &amp; thumbnails</strong><em>Publish, price and update the catalogue live.</em></div></li>
+          <li><span class="ic">◆</span><div><strong>Fraud signals</strong><em>Flagged accounts surfaced before money moves.</em></div></li>
+        </ul>
+      </div>
+
+      <div class="admin-aside-foot">
+        <div class="admin-stat"><strong>2FA</strong><span>Required for every admin</span></div>
+        <div class="admin-stat"><strong>Audited</strong><span>Every action is logged</span></div>
+        <div class="admin-stat"><strong>Encrypted</strong><span>Sensitive data at rest</span></div>
+      </div>
+    </aside>
   </main>
 
   <script src="/assets/js/api.js"></script>

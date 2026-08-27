@@ -27,6 +27,43 @@
   const formMessage = document.getElementById('formMessage');
   const passwordSubmitBtn = document.getElementById('passwordSubmitBtn');
   const totpSubmitBtn = document.getElementById('totpSubmitBtn');
+  const stepIntro = document.getElementById('stepIntro');
+  const authSteps = document.getElementById('authSteps');
+  const backBtn = document.getElementById('backToPasswordBtn');
+
+  function show(el, visible) {
+    if (!el) return;
+    el.classList.toggle('is-hidden', !visible);
+    el.hidden = !visible;
+  }
+
+  function setStep(step) {
+    if (authSteps) {
+      authSteps.querySelectorAll('li').forEach((li) => {
+        li.classList.toggle('is-active', Number(li.dataset.step) === step);
+        li.classList.toggle('is-done', Number(li.dataset.step) < step);
+      });
+    }
+    if (stepIntro) {
+      stepIntro.textContent = step === 1
+        ? 'Step 1 of 2 — sign in with your admin email and password.'
+        : 'Step 2 of 2 — two-factor verification.';
+    }
+  }
+
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      show(totpForm, false);
+      show(qrSetupBlock, false);
+      show(passwordForm, true);
+      hideMessage();
+      setStep(1);
+      passwordForm.password.value = '';
+      passwordForm.email.focus();
+    });
+  }
+
+  setStep(1);
 
   passwordForm.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -46,15 +83,16 @@
       return;
     }
 
-    passwordForm.style.display = 'none';
-    totpForm.style.display = 'block';
+    show(passwordForm, false);
+    show(totpForm, true);
+    setStep(2);
 
     if (result.data.requiresSetup) {
-      qrSetupBlock.style.display = 'block';
+      show(qrSetupBlock, true);
       qrCodeImage.src = result.data.qrCodeDataUrl;
       totpPrompt.textContent = 'Then enter the 6-digit code it shows to finish setup and sign in.';
     } else {
-      qrSetupBlock.style.display = 'none';
+      show(qrSetupBlock, false);
       totpPrompt.textContent = 'Enter the 6-digit code from your authenticator app.';
     }
 

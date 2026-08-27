@@ -82,7 +82,7 @@ window.courseCardHtml = function (course, index) {
   const pills = (copy.skills || []).slice(0, 4)
     .map((s) => `<span>${window.escapeHtml(s)}</span>`).join('');
   const tagline = copy.tagline || course.description || '';
-  const imageUrl = window.courseImage(course.name);
+  const imageUrl = window.courseArt ? window.courseArt(course) : window.courseImage(course.name);
 
   return `
     <a href="/course-detail.html?id=${encodeURIComponent(course.id)}" class="card glass course-card reveal-left" style="--reveal-delay:${(Number(index) || 0) * 0.12}s">

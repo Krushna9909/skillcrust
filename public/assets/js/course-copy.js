@@ -150,6 +150,14 @@ window.courseImage = function (name) {
   return window.COURSE_IMAGES[key] || '/assets/img/course-skills.jpg';
 };
 
+/** Admin-uploaded thumbnail wins over the bundled artwork. */
+window.courseArt = function (course) {
+  if (course && (course.thumbnailUrl || course.thumbnail_url)) {
+    return course.thumbnailUrl || course.thumbnail_url;
+  }
+  return window.courseImage(course && course.name);
+};
+
 /**
  * Shared presentational helpers used by every public course view.
  * Live here (not in courses-preview.js) so course-detail.html, which does

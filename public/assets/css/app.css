@@ -1222,3 +1222,272 @@ body.is-admin[data-theme='light'] { --accent: #6244e0; --accent-hover: #4e33c4; 
     text-align: left;
   }
 }
+
+/* ---- Wallet: withdrawal box — tightened alignment (mobile + desktop) ---- */
+.wallet-page .withdraw-form-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: auto !important;
+}
+.wallet-page .withdraw-note { margin: 0 !important; }
+.withdraw-row { gap: 14px; }
+.wallet-page #withdrawForm { flex: 1 1 320px; align-items: flex-end; }
+.wallet-page #withdrawForm > .field { display: grid; gap: 6px; }
+.wallet-page #kycHint { margin: 0; }
+.wallet-page #kycHint:empty { display: none; }
+
+@media (max-width: 720px) {
+  .wallet-page .withdraw-form-card { padding: 16px; gap: 12px; }
+  .withdraw-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    align-items: stretch;
+  }
+  /* a column flex-basis was stretching the form to 320px tall — hence the gap */
+  .wallet-page #withdrawForm {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    flex: 0 0 auto !important;
+    width: 100%;
+    height: auto;
+  }
+  .wallet-page #withdrawForm > .field { margin: 0; }
+  .wallet-page #withdrawForm > .field label { font-size: 0.86rem; margin-bottom: 0; }
+  .wallet-page #withdrawForm input { height: 48px; width: 100%; font-size: 1rem; }
+  .wallet-page #withdrawForm #withdrawSubmitBtn {
+    width: 100%; min-width: 0; height: 48px; margin: 0; align-self: stretch;
+  }
+  .wallet-page .method-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 !important; }
+  .wallet-page .method-toggle button { width: 100%; padding: 10px 8px; }
+  .wallet-page #kycHint p { margin: 0; font-size: 0.85rem; }
+}
+
+/* ---------------------------------------------------------------------------
+ * Admin — courses: thumbnails, delete zone, spacing
+ * ------------------------------------------------------------------------- */
+.add-course-card { margin-bottom: 32px; }
+.add-course-card .field { margin-bottom: 18px; }
+.add-course-card .field-row { gap: 18px; margin-bottom: 4px; }
+.add-course-card .form-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+.add-course-card .form-actions .btn { flex: 0 0 auto; }
+
+#coursesContainer .admin-course-card { margin-bottom: 18px; }
+#coursesContainer .admin-course-card .course-detail > form { margin-bottom: 8px; }
+
+.thumb-picker { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.thumb-btn { cursor: pointer; padding: 9px 18px; font-size: 0.85rem; }
+.thumb-note { font-size: 0.78rem; color: var(--text-faint); margin: 0; }
+
+.thumb-block {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+  margin: 26px 0 0;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.02);
+}
+.thumb-block h4 { font-size: 0.95rem; margin: 0 0 6px; }
+.thumb-block .thumb-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.thumb-block .form-message:empty { display: none; }
+.thumb-preview {
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+}
+.thumb-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.danger-zone {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+  padding: 16px 18px;
+  border: 1px solid color-mix(in oklab, var(--danger) 45%, transparent);
+  border-radius: var(--radius-md);
+  background: color-mix(in oklab, var(--danger) 8%, transparent);
+}
+.danger-zone h4 { font-size: 0.95rem; margin: 0 0 4px; color: var(--danger); }
+.btn.btn-danger {
+  background: var(--danger);
+  color: #fff;
+  border: 1px solid var(--danger);
+  padding: 9px 18px;
+  font-size: 0.85rem;
+}
+.btn.btn-danger:hover { filter: brightness(1.1); }
+
+@media (max-width: 720px) {
+  .thumb-block { grid-template-columns: minmax(0, 1fr); padding: 14px; }
+  .thumb-block .thumb-actions .btn, .thumb-picker .btn { width: 100%; justify-content: center; }
+  .danger-zone { flex-direction: column; align-items: stretch; }
+  .danger-zone .btn { width: 100%; justify-content: center; }
+  .add-course-card .form-actions .btn { width: 100%; justify-content: center; }
+}
+
+/* --- Admin login: two-step (password → 2FA/QR) --- */
+.auth-steps {
+  display: flex;
+  gap: 10px;
+  list-style: none;
+  margin: 0 0 22px;
+  padding: 0;
+}
+.auth-steps li {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-faint);
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  min-width: 0;
+}
+.auth-steps li span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.auth-steps li.is-active { color: var(--text); border-color: var(--border-strong); }
+.auth-steps li.is-active span { background: linear-gradient(135deg, #a855f7, #22d3ee); color: #08080f; }
+.auth-steps li.is-done span { background: rgba(34, 211, 238, 0.25); }
+
+.link-back {
+  background: none;
+  border: 0;
+  padding: 0;
+  margin-bottom: 14px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.link-back:hover { color: var(--text); }
+
+@media (max-width: 480px) {
+  .auth-steps { gap: 8px; }
+  .auth-steps li { font-size: 0.75rem; padding: 8px 10px; }
+  #qrSetupBlock > div { width: 100%; text-align: center; }
+  #qrSetupBlock img { width: 100% !important; max-width: 220px; height: auto !important; margin: 0 auto; }
+}
+
+/* --- Admin login: split console layout --------------------------------- */
+.is-hidden { display: none !important; }
+
+.admin-auth { grid-template-columns: 1.02fr 1fr; align-items: stretch; }
+.admin-auth .admin-auth-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 26px;
+}
+.admin-auth .auth-card { width: 100%; }
+.admin-auth .admin-aside {
+  border-right: 0;
+  border-left: 1px solid var(--border);
+  gap: 30px;
+}
+.admin-aside-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; position: relative; z-index: 1; }
+.admin-aside .brand { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; }
+.admin-tag {
+  font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase;
+  padding: 6px 12px; border-radius: 999px;
+  border: 1px solid rgba(34, 211, 238, 0.32);
+  color: var(--cyan); background: rgba(34, 211, 238, 0.08);
+}
+.admin-aside-body { position: relative; z-index: 1; }
+.admin-aside-body h2 { font-size: clamp(1.6rem, 2.6vw, 2.3rem); line-height: 1.14; margin: 0 0 10px; }
+.admin-aside-body > p { color: var(--text-muted); margin: 0 0 24px; max-width: 40ch; }
+.admin-feature-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.admin-feature-list li {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 13px 15px; border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  transition: transform .3s ease, border-color .3s ease, background .3s ease;
+}
+.admin-feature-list li:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.055);
+}
+.admin-feature-list .ic { color: var(--cyan); font-size: 0.7rem; line-height: 1.7; }
+.admin-feature-list strong { display: block; font-size: 0.93rem; }
+.admin-feature-list em { font-style: normal; font-size: 0.82rem; color: var(--text-muted); }
+.admin-aside-foot {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;
+}
+.admin-stat {
+  padding: 12px 13px; border-radius: 14px;
+  border: 1px solid var(--border); background: rgba(255, 255, 255, 0.03);
+}
+.admin-stat strong { display: block; font-family: var(--font-display); font-size: 1rem; }
+.admin-stat span { font-size: 0.72rem; color: var(--text-muted); line-height: 1.3; display: block; }
+
+.qr-setup { margin-bottom: 20px; }
+.qr-setup p { font-size: 0.88rem; }
+.qr-frame {
+  background: #fff; padding: 14px; border-radius: var(--radius-md, 14px);
+  width: fit-content; max-width: 100%; margin: 12px 0 0;
+}
+.qr-frame img { display: block; width: 200px; height: 200px; max-width: 100%; }
+
+@media (max-width: 940px) {
+  .admin-auth { grid-template-columns: 1fr; grid-template-rows: auto auto; min-height: 0; }
+  .admin-auth .admin-aside { display: flex !important; min-height: 0; height: auto; }
+  .admin-auth .admin-auth-form { order: 1; padding: 30px 18px 18px; }
+  .admin-auth .admin-aside {
+    order: 2; padding: 26px 18px 34px; border-left: 0; border-top: 1px solid var(--border);
+  }
+  .admin-aside-foot { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .admin-stat { padding: 10px; }
+  .admin-stat strong { font-size: 0.9rem; }
+  .admin-stat span { font-size: 0.66rem; }
+}
+@media (max-width: 560px) {
+  .admin-auth .admin-auth-form { padding: 22px 14px 14px; }
+  .admin-auth .auth-card { padding: 22px 18px; }
+  .admin-aside-top { flex-wrap: wrap; }
+  .qr-frame { margin-inline: auto; }
+  .qr-frame img { width: 100%; max-width: 210px; height: auto; }
+  .admin-aside-foot { grid-template-columns: 1fr; }
+}
+
+/* ==== Official SuccessRich logo inside app + admin shells ================ */
+.app-shell .brand .logo-official,
+.admin-shell .brand .logo-official { height: 42px; width: auto; max-width: 200px; object-fit: contain; }
+.app-shell .brand:has(.logo-official),
+.admin-shell .brand:has(.logo-official) { font-size: 0; }
+.app-shell .brand:has(.logo-official) .brand-sub,
+.admin-shell .brand:has(.logo-official) .brand-sub {
+  font-size: .58rem; letter-spacing: .2em; color: rgba(203,213,225,.85);
+}
+.app-shell .brand:hover .logo-official,
+.admin-shell .brand:hover .logo-official {
+  transform: scale(1.02);
+  filter: drop-shadow(0 8px 22px rgba(139,92,246,.7));
+}
+.admin-aside .logo-official,
+.admin-auth .logo-official { height: 54px; max-width: 230px; }
+@media (max-width: 720px) {
+  .app-shell .brand .logo-official,
+  .admin-shell .brand .logo-official { height: 34px; max-width: 155px; }
+  .admin-aside .logo-official, .admin-auth .logo-official { height: 44px; }
+}

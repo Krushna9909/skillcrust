@@ -44,7 +44,7 @@ async function loadUpgradeOptions() {
 
 function courseCardHtml(course, index) {
   const copy = (window.courseCopy && window.courseCopy(course.name)) || {};
-  const art = window.courseImage ? window.courseImage(course.name) : '';
+  const art = window.courseArt ? window.courseArt(course) : (window.courseImage ? window.courseImage(course.name) : '');
   return `
     <div class="course-card is-offer reveal-left is-visible" style="--reveal-delay:${(Number(index) || 0) * 0.09}s">
       ${art ? `<span class="course-media">
