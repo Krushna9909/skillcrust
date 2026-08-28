@@ -73,8 +73,8 @@ function renderAdminShellChrome() {
       </div>
     </aside>
     <div class="app-topbar">
-      <button class="app-topbar-toggle" id="topbarToggle" aria-label="Open menu" aria-expanded="false">\u2630 Menu</button>
-      <span class="brand" style="font-size:1.05rem;">${window.logoMarkSvg()}Success<span>Rich</span> Admin</span>
+      <button class="app-topbar-toggle" id="topbarToggle" aria-label="Open menu" aria-expanded="false"><span class="burger" aria-hidden="true"></span></button>
+      <a href="/admin-dashboard.html" class="brand" style="font-size:1.02rem;">${window.logoMarkSvg()}<span class="brand-text">Success<span>Rich</span> <span class="brand-sub">ADMIN</span></span></a>
       <div class="app-topbar-actions" data-theme-slot></div>
     </div>
   `);

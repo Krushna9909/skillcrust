@@ -383,16 +383,52 @@ async function deleteCourse(courseId) {
   const name = course ? course.name : 'this course';
   if (!window.confirm(`Delete "${name}"? This removes the course and its lectures permanently.`)) return;
 
-  const result = await apiRequest(`/admin/courses/${courseId}`, { method: 'DELETE' });
+  const btn = document.querySelector(`[data-delete-course="${courseId}"]`);
+  if (btn) { btn.disabled = true; btn.textContent = 'Deleting\u2026'; }
+
+  const restore = () => { if (btn) { btn.disabled = false; btn.textContent = 'Delete course'; } };
+
+  // 1) Preferred: real DELETE endpoint.
+  let result = await apiRequest(`/admin/courses/${courseId}`, { method: 'DELETE' });
+
+  // 2) Some deployments expose the destructive action as a POST action
+  //    instead of DELETE (proxies/hosts that strip DELETE). Try that next.
+  if (!result.ok && (result.status === 404 || result.status === 405 || result.status === 501)) {
+    result = await apiRequest(`/admin/courses/${courseId}/delete`, { method: 'POST' });
+  }
+
+  // 3) Last resort: deactivate so the course disappears from the storefront
+  //    even when the backend has no delete route at all.
+  let deactivatedOnly = false;
+  if (!result.ok && (result.status === 404 || result.status === 405 || result.status === 501)) {
+    const payload = {
+      name: course.name,
+      description: course.description || '',
+      price: course.price,
+      directBonus: course.directBonus,
+      indirectBonus: course.indirectBonus,
+      companyCut: course.companyCut,
+      isActive: false,
+    };
+    result = await apiRequest(`/admin/courses/${courseId}`, { method: 'PATCH', body: payload });
+    deactivatedOnly = result.ok;
+  }
 
   if (!result.ok) {
+    restore();
     const message = apiErrorMessage(result, 'Could not delete this course.');
     if (window.toast) window.toast(message, 'error');
     else window.alert(message);
     return;
   }
 
-  if (window.toast) window.toast('Course deleted.', 'success');
+  const msg = deactivatedOnly
+    ? 'Course removed from the storefront (deactivated).'
+    : 'Course deleted.';
+  if (window.toast) window.toast(msg, 'success');
   delete lectureCache[courseId];
+  const card = document.getElementById(`courseCard${courseId}`);
+  if (card) card.remove();
+  coursesData = coursesData.filter((c) => c.id !== courseId);
   await loadCourses();
 }

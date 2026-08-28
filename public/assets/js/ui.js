@@ -233,8 +233,8 @@ document.addEventListener('DOMContentLoaded', function () { window.attachRevealT
 
 
 /** Inline SVG logo mark — shared by the marketing site, app shell and admin shell. */
-window.SR_LOGO_SRC = '/assets/img/successrich-logo.png';
-window.SR_LOGO_SM = '/assets/img/successrich-logo-sm.png';
+window.SR_LOGO_SRC = '/assets/img/sr-mark.png';
+window.SR_LOGO_SM = '/assets/img/sr-mark-sm.png';
 
 /**
  * Official SuccessRich logo lockup. The artwork is the official brand file —
@@ -250,6 +250,8 @@ window.logoMarkSvg = window.logoMarkSvg || function (variant) {
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.brand[data-logo]:not([data-logo-ready])').forEach(function (el) {
     el.setAttribute('data-logo-ready', '1');
+    var empty = el.textContent.trim() === '';
     el.insertAdjacentHTML('afterbegin', window.logoMarkSvg());
+    if (empty) el.insertAdjacentHTML('beforeend', '<span class="brand-text">Success<span>Rich</span></span>');
   });
 });

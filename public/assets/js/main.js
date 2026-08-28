@@ -186,6 +186,9 @@ function initLogoSplash() {
     '<img src="' + window.SR_LOGO_SRC + '" alt="SuccessRich" decoding="async" />' +
     '<span class="sr-intro-sweep"><i></i></span>' +
     '</div>' +
+    '<div class="sr-intro-word">Success<span>Rich</span></div>' +
+    '<div class="sr-intro-caption">Unlock Skills. Unlock Yourself.</div>' +
+    '<div class="sr-intro-bar"><i></i></div>' +
     '</div>';
   document.body.appendChild(el);
   document.body.classList.add('is-splashing');
@@ -234,8 +237,8 @@ function initCardTilt() {
  * growth chart, rising arrow and star. Keeps the .lm-layer-1/2/3 and
  * .lm-spark class names so the existing splash animation keeps working.
  */
-window.SR_LOGO_SRC = '/assets/img/successrich-logo.png';
-window.SR_LOGO_SM = '/assets/img/successrich-logo-sm.png';
+window.SR_LOGO_SRC = '/assets/img/sr-mark.png';
+window.SR_LOGO_SM = '/assets/img/sr-mark-sm.png';
 
 /**
  * Official SuccessRich logo lockup. The artwork is the official brand file —

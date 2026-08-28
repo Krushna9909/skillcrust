@@ -1474,7 +1474,7 @@ body.is-admin[data-theme='light'] { --accent: #6244e0; --accent-hover: #4e33c4; 
 .app-shell .brand .logo-official,
 .admin-shell .brand .logo-official { height: 42px; width: auto; max-width: 200px; object-fit: contain; }
 .app-shell .brand:has(.logo-official),
-.admin-shell .brand:has(.logo-official) { font-size: 0; }
+.admin-shell .brand:has(.logo-official) { font-size: 1.05rem; }
 .app-shell .brand:has(.logo-official) .brand-sub,
 .admin-shell .brand:has(.logo-official) .brand-sub {
   font-size: .58rem; letter-spacing: .2em; color: rgba(203,213,225,.85);
@@ -1491,3 +1491,148 @@ body.is-admin[data-theme='light'] { --accent: #6244e0; --accent-hover: #4e33c4; 
   .admin-shell .brand .logo-official { height: 34px; max-width: 155px; }
   .admin-aside .logo-official, .admin-auth .logo-official { height: 44px; }
 }
+
+
+/* =========================================================================
+ * Shell brand + hamburger + mobile polish (user & admin panels)
+ * ====================================================================== */
+.app-sidebar .brand,
+.app-topbar .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.app-sidebar .brand .logo-official,
+.app-topbar .brand .logo-official { height: 30px; width: auto; flex: 0 0 auto; }
+.brand-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.brand-sub {
+  font-family: var(--font-mono);
+  font-size: .58em;
+  letter-spacing: .14em;
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  vertical-align: middle;
+}
+
+/* 3-line hamburger instead of a glyph/"Menu" label */
+.app-topbar-toggle .burger,
+.app-topbar-toggle .burger::before,
+.app-topbar-toggle .burger::after {
+  content: '';
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform .25s var(--ease), opacity .2s var(--ease);
+}
+.app-topbar-toggle .burger { position: relative; }
+.app-topbar-toggle .burger::before { position: absolute; top: -6px; }
+.app-topbar-toggle .burger::after { position: absolute; top: 6px; }
+.app-topbar-toggle[aria-expanded="true"] .burger { background: transparent; }
+.app-topbar-toggle[aria-expanded="true"] .burger::before { transform: translateY(6px) rotate(45deg); }
+.app-topbar-toggle[aria-expanded="true"] .burger::after { transform: translateY(-6px) rotate(-45deg); }
+
+@media (max-width: 980px) {
+  .app-topbar { gap: 10px; }
+  .app-topbar-title { display: none; }
+  .app-topbar .brand { font-size: .98rem; }
+}
+@media (max-width: 560px) {
+  .app-topbar .brand .brand-sub { display: none; }
+  .app-main { padding: 16px 14px 56px; }
+  .page-head h1 { font-size: 1.35rem !important; }
+  .page-head p { font-size: .88rem; }
+  .card, .table-card { border-radius: 14px; }
+  .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab-btn { white-space: nowrap; }
+}
+
+/* ---- Tables on phones ------------------------------------------------- */
+@media (max-width: 720px) {
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-scroll .data-table { min-width: 560px; }
+  .data-table th, .data-table td { white-space: nowrap; }
+}
+/* Tables whose cells carry data-label stack into readable cards instead. */
+@media (max-width: 720px) {
+  .data-table:has(td[data-label]) { min-width: 0 !important; width: 100%; display: block; }
+  .data-table:has(td[data-label]) thead { display: none; }
+  .data-table:has(td[data-label]) tbody { display: block; }
+  .data-table:has(td[data-label]) tbody tr {
+    display: grid; gap: 6px; padding: 13px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table:has(td[data-label]) td {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 0; border: 0; white-space: normal; text-align: right;
+  }
+  .data-table:has(td[data-label]) td::before {
+    content: attr(data-label);
+    color: var(--text-faint);
+    font-size: .74rem; text-transform: uppercase; letter-spacing: .04em;
+    text-align: left;
+  }
+}
+
+/* ---- Leaderboard ranking graph ---------------------------------------- */
+.lb-chart { padding: 18px 20px 22px; margin-bottom: 22px; }
+.lb-chart-head {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 12px; margin-bottom: 16px;
+}
+.lb-chart-head h3 { font-size: 1.02rem; margin: 0; }
+.lb-myrank {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 14px; border-radius: 999px;
+  background: var(--accent-soft); border: 1px solid var(--border);
+  font-size: .82rem; color: var(--text-muted);
+}
+.lb-myrank strong { color: var(--text); font-size: 1rem; }
+.lb-bars { display: grid; gap: 14px; }
+.lb-bar-row {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center;
+  animation: fade-up .45s var(--ease) both; animation-delay: calc(var(--i) * .06s);
+}
+.lb-bar-row .lb-rank { flex: 0 0 auto; }
+.lb-bar-main { min-width: 0; display: grid; gap: 6px; }
+.lb-bar-label { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: .88rem; }
+.lb-bar-label strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lb-bar-value { margin-left: auto; color: var(--money); white-space: nowrap; }
+.lb-bar-track { height: 12px; border-radius: 999px; background: var(--surface-sunken); overflow: hidden; }
+.lb-bar-fill {
+  display: block; height: 100%; width: 0; border-radius: 999px;
+  background: linear-gradient(90deg, #6D28D9, #A855F7, #22D3EE);
+  animation: lb-grow .9s cubic-bezier(.16,.9,.24,1) forwards;
+  animation-delay: calc(.1s + var(--i, 0) * .06s);
+}
+@keyframes lb-grow { to { width: var(--w); } }
+.lb-bar-row.is-me .lb-bar-track { box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 45%, transparent); }
+@media (max-width: 560px) {
+  .lb-chart { padding: 14px 14px 18px; }
+  .lb-bar-label { flex-wrap: wrap; font-size: .82rem; }
+  .lb-bar-value { margin-left: auto; }
+  .lb-myrank { width: 100%; justify-content: space-between; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lb-bar-fill { animation: none; width: var(--w); }
+  .lb-bar-row { animation: none; }
+}
+
+/* ---- Admin: internal module spacing on phones -------------------------- */
+@media (max-width: 720px) {
+  .admin-course-card .field-row { grid-template-columns: minmax(0, 1fr) !important; gap: 10px; }
+  .admin-course-card .course-row { flex-wrap: wrap; gap: 6px; }
+  .thumb-block { grid-template-columns: minmax(0, 1fr) !important; }
+  .danger-zone { flex-direction: column; align-items: stretch; gap: 12px; }
+  .danger-zone .btn { width: 100%; }
+  .filter-bar, .toolbar { flex-wrap: wrap; gap: 10px; }
+  .filter-bar input, .filter-bar select, .toolbar input, .toolbar select { flex: 1 1 100%; min-width: 0; }
+}
+
+/* Podium: gold first when the three cards stack on phones */
+@media (max-width: 720px) {
+  .podium-card.rank-1 { order: -1; }
+  .podium-card { padding: 16px 14px; }
+  .podium-card.rank-1 { padding-block: 20px; }
+}
+@media (max-width: 720px) { .admin-course-card .course-detail { padding-top: 16px; } }

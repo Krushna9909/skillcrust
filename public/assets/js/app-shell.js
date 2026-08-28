@@ -109,7 +109,7 @@ function renderShellChrome() {
   root.insertAdjacentHTML('afterbegin', `
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
     <aside class="app-sidebar" id="appSidebar" aria-label="Dashboard navigation">
-      <a href="/dashboard.html" class="brand">${window.logoMarkSvg()}Success<span>Rich</span></a>
+      <a href="/dashboard.html" class="brand">${window.logoMarkSvg()}<span class="brand-text">Success<span>Rich</span></span></a>
       <nav aria-label="Sections"><ul class="app-nav">${navHtml}</ul></nav>
       <div class="app-sidebar-footer">
         <div class="sidebar-wallet">
@@ -127,8 +127,8 @@ function renderShellChrome() {
       </div>
     </aside>
     <div class="app-topbar">
-      <button class="app-topbar-toggle" id="topbarToggle" aria-label="Open menu" aria-expanded="false" aria-controls="appSidebar">\u2630</button>
-      <a href="/dashboard.html" class="brand" style="font-size:1.02rem;">${window.logoMarkSvg()}Success<span>Rich</span></a>
+      <button class="app-topbar-toggle" id="topbarToggle" aria-label="Open menu" aria-expanded="false" aria-controls="appSidebar"><span class="burger" aria-hidden="true"></span></button>
+      <a href="/dashboard.html" class="brand" style="font-size:1.02rem;">${window.logoMarkSvg()}<span class="brand-text">Success<span>Rich</span></span></a>
       <span class="app-topbar-title">${current ? current.label : ''}</span>
       <div class="app-topbar-actions" data-theme-slot></div>
     </div>

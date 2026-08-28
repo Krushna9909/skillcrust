@@ -48,9 +48,14 @@ function wireTabs() {
 function renderWindow(windowKey) {
   const wrap = document.getElementById('leaderboardTableWrap');
   const podium = document.getElementById('leaderboardPodium');
+  const chart = document.getElementById('leaderboardChart');
   const entries = (leaderboardData && leaderboardData[windowKey]) || [];
+  const myIndex = currentReferCode
+    ? entries.findIndex((e) => e.referCode === currentReferCode)
+    : -1;
 
   if (podium) podium.innerHTML = entries.length >= 3 ? podiumHtml(entries.slice(0, 3)) : '';
+  if (chart) chart.innerHTML = chartHtml(entries, myIndex);
 
   if (entries.length === 0) {
     wrap.innerHTML = '<p class="empty-state" style="margin:22px;">No earners in this window yet \u2014 share your link and you could be first.</p>';
@@ -62,10 +67,10 @@ function renderWindow(windowKey) {
     const isMe = currentReferCode && entry.referCode === currentReferCode;
     return `
       <tr${isMe ? ' class="is-me"' : ''}>
-        <td><span class="rank-badge rank-${rank <= 3 ? rank : ''}">${rank}</span></td>
-        <td><strong>${escapeHtml(entry.fullName)}</strong>${isMe ? ' <span class="badge badge-info">You</span>' : ''}</td>
-        <td><span class="refer-code">${escapeHtml(entry.referCode)}</span></td>
-        <td class="amount credit">${formatRupees(entry.totalEarned)}</td>
+        <td data-label="Rank"><span class="rank-badge rank-${rank <= 3 ? rank : ''}">${rank}</span></td>
+        <td data-label="Name"><strong>${escapeHtml(entry.fullName)}</strong>${isMe ? ' <span class="badge badge-info">You</span>' : ''}</td>
+        <td data-label="Refer code"><span class="refer-code">${escapeHtml(entry.referCode)}</span></td>
+        <td data-label="Total earned" class="amount credit">${formatRupees(entry.totalEarned)}</td>
       </tr>
     `;
   }).join('');
@@ -76,6 +81,44 @@ function renderWindow(windowKey) {
       <tbody>${rows}</tbody>
     </table></div>
   `;
+}
+
+/**
+ * Graphical ranking view: animated bars for the top earners plus a
+ * highlighted bar for the signed-in user's own rank (appended when they
+ * are outside the visible top slice).
+ */
+function chartHtml(entries, myIndex) {
+  if (!entries.length) return '<p class="empty-state" style="padding:18px;">Nothing to chart yet.</p>';
+
+  const top = entries.slice(0, 5).map((e, i) => ({ entry: e, rank: i + 1 }));
+  if (myIndex >= 5) top.push({ entry: entries[myIndex], rank: myIndex + 1 });
+
+  const max = Math.max.apply(null, top.map((r) => Number(r.entry.totalEarned) || 0)) || 1;
+
+  const bars = top.map((row, i) => {
+    const value = Number(row.entry.totalEarned) || 0;
+    const pct = Math.max(6, Math.round((value / max) * 100));
+    const isMe = currentReferCode && row.entry.referCode === currentReferCode;
+    return `
+      <div class="lb-bar-row${isMe ? ' is-me' : ''}" style="--i:${i}">
+        <span class="lb-rank rank-badge rank-${row.rank <= 3 ? row.rank : ''}">${row.rank}</span>
+        <div class="lb-bar-main">
+          <div class="lb-bar-label">
+            <strong>${escapeHtml(row.entry.fullName)}</strong>
+            ${isMe ? '<span class="badge badge-info">You</span>' : ''}
+            <span class="lb-bar-value mono">${formatRupees(value)}</span>
+          </div>
+          <div class="lb-bar-track"><span class="lb-bar-fill" style="--w:${pct}%"></span></div>
+        </div>
+      </div>`;
+  }).join('');
+
+  const mine = myIndex >= 0
+    ? `<div class="lb-myrank"><span>Your rank</span><strong>#${myIndex + 1}</strong><span class="mono">${formatRupees(entries[myIndex].totalEarned)}</span></div>`
+    : '<div class="lb-myrank is-empty"><span>Your rank</span><strong>Unranked</strong><span>Share your link to enter the board</span></div>';
+
+  return `<div class="lb-chart-head"><h3>Ranking graph</h3>${mine}</div><div class="lb-bars">${bars}</div>`;
 }
 
 /** Top three, rendered from the same real entries the table below uses. */
